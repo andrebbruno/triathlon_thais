@@ -78,6 +78,63 @@ function Normalize-Description {
   return ($output -join "`n").Trim()
 }
 
+function Remove-Diacritics {
+  param([string]$Text)
+  if (-not $Text) { return "" }
+  $normalized = $Text.Normalize([Text.NormalizationForm]::FormD)
+  $sb = New-Object System.Text.StringBuilder
+  foreach ($ch in $normalized.ToCharArray()) {
+    $cat = [Globalization.CharUnicodeInfo]::GetUnicodeCategory($ch)
+    if ($cat -ne [Globalization.UnicodeCategory]::NonSpacingMark) {
+      [void]$sb.Append($ch)
+    }
+  }
+  return $sb.ToString().Normalize([Text.NormalizationForm]::FormC)
+}
+
+function Slugify {
+  param([string]$Text)
+  if (-not $Text) { return "item" }
+  $clean = Remove-Diacritics -Text $Text
+  $slug = ($clean.ToLowerInvariant() -replace "[^a-z0-9]+", "-").Trim("-")
+  if (-not $slug) { return "item" }
+  return $slug
+}
+
+function Get-ExternalId {
+  param([hashtable]$Event)
+  if ($Event.external_id -and -not [string]::IsNullOrWhiteSpace([string]$Event.external_id)) {
+    return [string]$Event.external_id
+  }
+
+  $dateToken = "undated"
+  if ($Event.start_date_local) {
+    try {
+      $dateToken = ([DateTime]$Event.start_date_local).ToString("yyyyMMdd")
+    } catch {
+      if ($Event.start_date_local -match "\d{4}-\d{2}-\d{2}") {
+        $dateToken = ($matches[0] -replace "-", "")
+      }
+    }
+  }
+
+  $typeToken = if ($Event.type) { Slugify -Text $Event.type } else { "type" }
+  $nameToken = if ($Event.name) { Slugify -Text $Event.name } else { "session" }
+
+  $hashSource = "$($Event.name)|$($Event.start_date_local)|$($Event.type)|$($Event.description)"
+  $hash = "000000"
+  if ($hashSource) {
+    try {
+      $md5 = [System.Security.Cryptography.MD5]::Create()
+      $bytes = [Text.Encoding]::UTF8.GetBytes($hashSource)
+      $hashBytes = $md5.ComputeHash($bytes)
+      $hash = ([BitConverter]::ToString($hashBytes) -replace "-", "").ToLowerInvariant().Substring(0,6)
+    } catch { }
+  }
+
+  return "auto_${dateToken}_${typeToken}_${nameToken}_$hash"
+}
+
 function Validate-Event {
   param(
     [hashtable]$Event
@@ -175,6 +232,15 @@ foreach ($event in $events) {
 
   $eventHash.description = Normalize-Description -Description $eventHash.description -Type $eventHash.type
   $eventHash.start_date_local = Apply-StartTime -StartDateLocal $eventHash.start_date_local -StartTime $StartTimeLocal
+  if (-not $eventHash.external_id -or [string]::IsNullOrWhiteSpace([string]$eventHash.external_id)) {
+    $eventHash.external_id = Get-ExternalId -Event $eventHash
+    Write-Host "Aviso: external_id ausente. Gerado automaticamente: $($eventHash.external_id)"
+    Write-Log -Level "warn" -Message "external_id gerado" -Data @{
+      external_id = $eventHash.external_id
+      name = $eventHash.name
+      start = $eventHash.start_date_local
+    }
+  }
 
   $validation = Validate-Event -Event $eventHash
   foreach ($warning in $validation.Warnings) {
