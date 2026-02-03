@@ -62,10 +62,35 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "Weekly export - ${{ job.status }}"
-          to: ${{ secrets.SMTP_TO }}
+          subject: "Thais, seu relatório semanal está pronto ✅"
+          to: "thaisalourencofreitas@gmail.com"
           from: ${{ secrets.SMTP_FROM }}
           secure: true
           body: |
-            Status: ${{ job.status }}
-            Report: https://andrebbruno.github.io/triathlon_thais/
+            Olá, Thais!
+
+            Parabéns pela consistência da semana! Seu relatório já está disponível:
+            https://andrebbruno.github.io/triathlon_thais/
+
+            Qualquer dúvida, é só falar com a gente.
+            — Coach
+          html_body: |
+            <div style="background:#0b1022;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#e5e7eb;">
+              <div style="max-width:620px;margin:0 auto;background:linear-gradient(135deg,#5f6ddf 0%,#8f6ccf 60%,#d17ca8 100%);border-radius:18px;padding:22px;">
+                <h1 style="margin:0 0 8px 0;font-size:20px;">Relatório de Coaching • Thais</h1>
+                <p style="margin:0;color:#f1f5f9;">Seu resumo semanal está pronto.</p>
+              </div>
+              <div style="max-width:620px;margin:16px auto;background:#121a33;border-radius:16px;padding:20px;border:1px solid rgba(148,163,184,0.15);">
+                <h2 style="margin:0 0 8px 0;font-size:16px;">Parabéns pela semana! 💪</h2>
+                <p style="margin:0 0 16px 0;color:#cbd5f5;line-height:1.5;">
+                  Excelente consistência nos treinos. Mantivemos o foco no que importa agora:
+                  base sólida, técnica e progressão segura.
+                </p>
+                <a href="https://andrebbruno.github.io/triathlon_thais/" style="display:inline-block;background:#0b1022;color:#e5e7eb;text-decoration:none;padding:10px 16px;border-radius:999px;border:1px solid rgba(148,163,184,0.3);font-weight:600;">
+                  Abrir relatório semanal
+                </a>
+              </div>
+              <div style="max-width:620px;margin:12px auto 0 auto;color:#94a3b8;font-size:12px;">
+                Status: ${{ job.status }} · Atualizado automaticamente via GitHub Actions
+              </div>
+            </div>
