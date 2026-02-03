@@ -1,19 +1,19 @@
 {
   "semana": {
-    "fim": "2026-02-08",
+    "distancia_total_km": 21.4,
+    "tempo_total_horas": 2.3,
     "inicio": "2026-02-02",
     "carga_total_tss": 75.0,
-    "distancia_total_km": 21.4,
-    "tempo_total_horas": 2.3
+    "fim": "2026-02-08"
   },
   "metricas": {
     "RampRate": 1.2,
     "peso_atual": null,
-    "ATL": 35.5,
     "TSB": -8.0,
+    "vo2_bike": 49.0,
+    "ATL": 35.5,
     "vo2_run": 49.0,
-    "CTL": 27.5,
-    "vo2_bike": 49.0
+    "CTL": 27.5
   },
   "atividades": [
     {
