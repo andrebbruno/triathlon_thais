@@ -54,6 +54,8 @@ if (-not $StartDate -or -not $EndDate) {
     $EndDate = $range.End
 }
 
+$AthleteId = if (($AthleteId -eq "0" -or -not $AthleteId) -and $env:INTERVALS_ATHLETE_ID) { $env:INTERVALS_ATHLETE_ID } else { $AthleteId }
+
 $apiKey = Get-ApiKey -Path $ApiKeyPath
 if (-not $apiKey) {
     Write-Host "API key not provided."

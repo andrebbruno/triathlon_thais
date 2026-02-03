@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
+      INTERVALS_ATHLETE_ID: ${{ secrets.INTERVALS_ATHLETE_ID }}
       AUTO_UPLOAD: "true"
     steps:
       - name: Checkout
@@ -26,8 +27,8 @@ jobs:
       - name: Export Intervals reports
         shell: pwsh
         run: |
-          ./export-intervals-week-com-notas.ps1
-          ./intervals-longterm-coach-edition.ps1 -WeeksBack 12
+          ./export-intervals-week-com-notas.ps1 -AthleteId $env:INTERVALS_ATHLETE_ID
+          ./intervals-longterm-coach-edition.ps1 -WeeksBack 12 -AthleteId $env:INTERVALS_ATHLETE_ID
 
       - name: Weekly analysis + plan
         shell: pwsh
@@ -55,7 +56,7 @@ jobs:
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v4
-        if: always()
+        if: ${{ always() && secrets.SMTP_SERVER != '' }}
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
           server_port: ${{ secrets.SMTP_PORT }}
@@ -67,4 +68,4 @@ jobs:
           secure: true
           body: |
             Status: ${{ job.status }}
-            Report: https://andrebbruno.github.io/triathlon_codex/
+            Report: https://andrebbruno.github.io/triathlon_thais/
