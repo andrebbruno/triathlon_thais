@@ -1,4 +1,4 @@
-name: weekly-export
+﻿name: weekly-export
 
 on:
   schedule:
@@ -15,6 +15,11 @@ jobs:
       INTERVALS_API_KEY: ${{ secrets.INTERVALS_API_KEY }}
       INTERVALS_ATHLETE_ID: ${{ secrets.INTERVALS_ATHLETE_ID }}
       AUTO_UPLOAD: "true"
+      SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      SMTP_FROM: ${{ secrets.SMTP_FROM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,15 +61,15 @@ jobs:
 
       - name: Send notification email
         uses: dawidd6/action-send-mail@v4
-        if: ${{ always() && secrets.SMTP_SERVER != '' }}
+        if: ${{ always() && env.SMTP_SERVER != '' }}
         with:
-          server_address: ${{ secrets.SMTP_SERVER }}
-          server_port: ${{ secrets.SMTP_PORT }}
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
+          server_address: ${{ env.SMTP_SERVER }}
+          server_port: ${{ env.SMTP_PORT }}
+          username: ${{ env.SMTP_USERNAME }}
+          password: ${{ env.SMTP_PASSWORD }}
           subject: "Thais, seu relatório semanal está pronto ✅"
           to: "thaisalourencofreitas@gmail.com"
-          from: ${{ secrets.SMTP_FROM }}
+          from: ${{ env.SMTP_FROM }}
           secure: true
           body: |
             Olá, Thais!
