@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffe3ec"/>
+      <stop offset="60%" stop-color="#fff1d6"/>
+      <stop offset="100%" stop-color="#e6f7f7"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff6f91"/>
+      <stop offset="100%" stop-color="#f6c453"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" rx="48" fill="url(#g1)"/>
+  <rect x="120" y="140" width="960" height="520" rx="36" fill="rgba(255,111,145,0.16)"/>
+  <path d="M0 620 C 220 700, 430 560, 620 650 C 820 740, 980 680, 1200 740 L 1200 900 L 0 900 Z" fill="url(#g2)" opacity="0.7"/>
+  <text x="80" y="120" font-family="Arial, sans-serif" font-size="28" fill="#7a3450" opacity="0.65">Hero Image Placeholder</text>
+  <text x="80" y="165" font-family="Arial, sans-serif" font-size="18" fill="#7a3450" opacity="0.65">Substituir pela foto da Thais</text>
+</svg>

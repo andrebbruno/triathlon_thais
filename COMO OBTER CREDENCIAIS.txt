@@ -1,0 +1,53 @@
+- Criar conta no intervals.icu
+- Baixar o aplicativo "Visual Studio Code" para Windows
+- Crie uma pasta no seu Windows (se tiver OneDrive ainda melhor) ex: C:\Triathlon_Semanal_Thais
+- Crie um arquivo "credentials.txt" e salve o arquivo na pasta criada acima
+- Criar uma conta de desenvolvedor Strava:
+	Acesse: https://www.strava.com/settings/api
+	Faça login com sua conta Strava.
+	Clique em “Create & Manage Your App”.
+	Preencha os campos:
+	Application Name: nome do seu app (ex: “CoachGPT Sync”)
+	Website: pode ser seu site ou http://localhost
+	Authorization Callback Domain: obrigatório! Exemplo: localhost ou o domínio onde rodará o app.
+	Description: breve descrição do uso.
+	Ao salvar, você verá:
+	Client ID
+	Client Secret
+Importante: Guarde essas informações no arqqivo credentials.txt, pois você precisará delas para autenticar suas chamadas à API.
+
+
+Depois disso precisaremos do "Token de Acesso do Strava"
+
+Acesse o site, substituindo no campo "client_id=12345" pelo número correspondente que você salvou no arquivo credentials.txt
+
+https://www.strava.com/oauth/authorize?client_id=12345&response_type=code&redirect_uri=http://localhost&approval_prompt=force&scope=read,activity:read_all,activity:write
+- O que vai acontecer
+
+Quando abrir essa URL no navegador, o Strava pedirá para você autorizar o aplicativo.
+
+Após aceitar todos os campos, o Strava vai redirecionar o navegador para algo como:
+
+http://localhost/?state=&code=abc1234567890&scope=read,activity:read_all,activity:write
+
+O valor que você precisa é o code, como no exemplo acima: abc1234567890
+
+Anote o code no "credentails.txt".
+
+Etapa 2: Trocar o código por um token
+
+no Powershell, execute o seguinte comando (substituindo os IDs)
+
+curl -X POST https://www.strava.com/oauth/token \
+  -d client_id=12345 \
+  -d client_secret=SEU_CLIENT_SECRET \
+  -d code=abc1234567890 \
+  -d grant_type=authorization_code
+
+A resposta incluirá:
+
+access_token (token de acesso)
+refresh_token (para renovar quando expirar)
+expires_at (timestamp de expiração)
+
+Anote esses mesmos campos no "credentials.txt"

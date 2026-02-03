@@ -1,0 +1,106 @@
+[
+    {
+        "external_id":  "training_20260202_strength",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-02T00:00:00",
+        "type":  "WeightTraining",
+        "name":  "Forca - Membros Superiores",
+        "description":  "Sessao planejada"
+    },
+    {
+        "external_id":  "2026-02-03-bike-ss-controlado",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-03T07:00:00",
+        "type":  "Ride",
+        "name":  "Bike - Teste FTP 20m",
+        "description":  "Warmup\n- 15m Z1\n\nOpeners Repeat 3x\n- 1m Z4\n- 2m Z1\n\nTeste FTP 20m\n- 20m Maximo sustentavel\n\nCooldown\n- 10m Z1"
+    },
+    {
+        "external_id":  "training_20260204_swim",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-04T00:00:00",
+        "type":  "Swim",
+        "name":  "Natacao - Tecnico Base",
+        "description":  "Warmup\n- 300meters Z1 pace\n\nTecnica crawl Repeat 8x\n- 50meters Z2 pace\n- Rest 15s\n\nEndurance aerobio Repeat 4x\n- 100meters Z2 pace\n- Rest 20s\n\nCooldown\n- 200meters Z1 pace"
+    },
+    {
+        "external_id":  "2026-02-04-run-tiros-curtos",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-04T08:00:00",
+        "type":  "Run",
+        "name":  "Run - Tiros Curtos (Manutencao)",
+        "description":  "Warmup\n- 15m 06:20-06:40/km pace\n\nTiros 8x\n- 30s 05:00-05:15/km pace\n- 1m30s Z1 pace\n\nCooldown\n- 10m 06:30-06:50/km pace"
+    },
+    {
+        "external_id":  "training_20260204_run",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-04T08:00:00",
+        "type":  "Run",
+        "name":  "Corrida - Easy Aerobico",
+        "description":  "- Aquecimento caminhada\n  5m Z1 Pace\n\n- Easy pace - 7:00-7:30/km\n  30m Z2 Pace\n\n- Volta a calma\n  5m Z1 Pace"
+    },
+    {
+        "external_id":  "training_20260205_strength",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-05T00:00:00",
+        "type":  "WeightTraining",
+        "name":  "Forca - Membros Inferiores",
+        "description":  "Sessao planejada"
+    },
+    {
+        "external_id":  "2026-02-05-bike-endurance-z2",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-05T00:00:00",
+        "type":  "Ride",
+        "name":  "Bike - Endurance Z2",
+        "description":  "Endurance\n- 75m 165-175W power=3s 90-95rpm"
+    },
+    {
+        "external_id":  "training_20260205_ride",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-05T00:00:00",
+        "type":  "Ride",
+        "name":  "Bike - Endurance Z2",
+        "description":  "- Aquecimento\n  15m Z1\n\n- Endurance aerobio sustentado\n  50m Z2\n\n- Desaquecimento\n  10m Z1"
+    },
+    {
+        "external_id":  "training_20260206_swim",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-06T00:00:00",
+        "type":  "Swim",
+        "name":  "Natacao - Volume Base",
+        "description":  "Warmup\n- 200meters Z1 pace\n\nEndurance base Repeat 6x\n- 100meters Z2 pace\n- Rest 15s\n\nRitmo moderado Repeat 4x\n- 50meters Z3 pace\n- Rest 20s\n\nCooldown\n- 200meters Z1 pace"
+    },
+    {
+        "external_id":  "2026-02-06-swim-tecnica-leve",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-06T00:00:00",
+        "type":  "Swim",
+        "name":  "Swim - Tecnica Aerobio Leve",
+        "description":  "Warmup\n- 300meters Z1 pace\n\nTecnica Repeat 6x\n- 50meters Z1 pace\n- Rest 15s\n\nSerie Principal Repeat 4x\n- 100meters Z2 pace\n- Rest 15s\n\nCooldown\n- 200meters Z1 pace"
+    },
+    {
+        "external_id":  "2026-02-07-run-base-protegida",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-07T08:00:00",
+        "type":  "Run",
+        "name":  "Run - Base Curta Protegida",
+        "description":  "Base\n- 45m 06:50-07:30/km pace"
+    },
+    {
+        "external_id":  "training_20260208_ride",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-08T00:00:00",
+        "type":  "Ride",
+        "name":  "Bike - Longao Base",
+        "description":  "- Aquecimento progressivo\n  20m Z1\n\n- Endurance aerobio sustentado\n  60m Z2\n\n- Desaquecimento\n  10m Z1"
+    },
+    {
+        "external_id":  "2026-02-08-bike-longao-limpo",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-08T00:00:00",
+        "type":  "Ride",
+        "name":  "Bike - Longao Endurance Limpo",
+        "description":  "Endurance\n- 2h20m 165-180W power=3s 90-95rpm\n\nCooldown\n- 10m 138-155W power=3s"
+    }
+]

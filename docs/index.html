@@ -1,0 +1,279 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relatórios Intervals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1022;--card:#121a33;--card-2:#10172b;--text:#e5e7eb;--muted:#94a3b8;--accent:#ff6f91;--accent-2:#4bb6c1;--accent-3:#f6c453;--accent-4:#a855f7}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 15% 15%, rgba(255,111,145,0.25) 0%, #0b1022 50%, #090d1b 100%);color:var(--text);font-family:"Sora",sans-serif}
+    .wrap{max-width:1200px;margin:28px auto;padding:0 22px}
+    .hero{background:linear-gradient(135deg,#5f6ddf 0%,#8f6ccf 60%,#d17ca8 100%);border-radius:22px;padding:26px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:16px;align-items:center}
+    .hero h1{margin:0;font-size:28px}
+    .hero p{margin:6px 0 0 0;color:#eef2ff}
+    .pill{background:rgba(15,23,42,0.3);padding:8px 14px;border-radius:999px;font-weight:600}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:#0b1022;color:#e5e7eb;border:1px solid rgba(148,163,184,0.3);padding:10px 14px;border-radius:999px;font-weight:600}
+    .btn:hover{border-color:rgba(148,163,184,0.6)}
+    .grid{display:grid;gap:14px}
+    .grid-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .grid-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .card{background:var(--card);border-radius:16px;padding:16px;border:1px solid rgba(148,163,184,0.12)}
+    .metric{background:var(--card-2);border-radius:14px;padding:14px}
+    .metric .value{font-size:22px;font-weight:700}
+    .metric .label{font-size:12px;color:var(--muted)}
+    h2{margin:22px 0 12px 0;font-size:18px}
+    .event-card{display:flex;gap:12px;align-items:center;background:var(--card-2);border-radius:14px;padding:12px;border-left:4px solid var(--accent)}
+    .event-card.tag-b{border-left-color:var(--accent-3)}
+    .event-card.tag-c{border-left-color:#38bdf8}
+    .event-days{width:70px;text-align:center;font-weight:700;font-size:20px}
+    .event-days span{display:block;font-size:11px;color:var(--muted)}
+    .event-info{flex:1}
+    .event-name{font-weight:700}
+    .event-meta,.event-date{font-size:12px;color:var(--muted)}
+    .event-tag{font-size:12px;background:#1f2a4a;padding:6px 10px;border-radius:999px}
+    .link-card{display:flex;justify-content:space-between;align-items:center;background:var(--card-2);padding:10px 12px;border-radius:12px}
+    .chip{background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.35);color:#dbeafe;padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer}
+    .chip.active{background:#60a5fa;color:#0b1022}
+    .archive-group{display:none}
+    .archive-group.active{display:grid;gap:10px}
+    a{color:#93c5fd;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .muted{color:var(--muted)}
+    .hero-media{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .hero-media img{width:100%;height:230px;object-fit:cover;border-radius:18px;border:1px solid rgba(148,163,184,0.2)}
+    .hero-left{display:flex;flex-direction:column;gap:10px;min-height:230px}
+    .hero-actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-start}
+    .calendar-phase{align-items:stretch}
+    .calendar-phase > div{display:flex;flex-direction:column}
+    .calendar-phase .phase-card{flex:1;display:flex;flex-direction:column;gap:12px}
+    .calendar-phase .phase-card ul{margin:0}
+    .phase-list{display:grid;gap:10px}
+    .phase-item{display:flex;gap:12px;padding-bottom:10px;border-bottom:1px dashed rgba(148,163,184,0.18)}
+    .phase-item:last-child{border-bottom:none;padding-bottom:0}
+    .phase-range{min-width:96px;font-weight:700;color:#93c5fd;font-size:12px}
+    .phase-lines{display:grid;gap:4px}
+    .phase-line{font-size:12px;color:#e2e8f0;line-height:1.4}
+    .phase-summary{margin-top:auto;padding-top:12px;border-top:1px solid rgba(148,163,184,0.14)}
+    .phase-caption{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+    .phase-notes{margin:8px 0 0 0;padding-left:18px;color:var(--muted);font-size:12px;line-height:1.5}
+    .phase-hint{margin:8px 0 0 0;color:var(--muted);font-size:12px}
+    .phase-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:10px}
+    .phase-kpi{background:var(--card-2);border-radius:12px;padding:10px;border:1px solid rgba(148,163,184,0.12)}
+    .phase-kpi .label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+    .phase-kpi .value{font-size:13px;font-weight:700;margin-top:4px}
+    .kpi-strip{margin-top:14px}
+    .kpi-bar{background:var(--card-2);border-radius:18px;padding:16px;border:1px solid rgba(148,163,184,0.12)}
+    .kpi-bar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .kpi-bar-title{font-size:14px;font-weight:700}
+    .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+    .kpi-pill{background:rgba(15,23,42,0.45);border:1px solid rgba(148,163,184,0.2);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+    .kpi-pill .label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+    .kpi-pill .value{font-size:14px;font-weight:700}
+    @media (max-width: 900px){
+      .hero{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-left">
+        <h1>Relatório de Coaching</h1>
+        <p>Thais Lourenço · Temporada 2026</p>
+        <div class="hero-actions">
+          <a class="btn" href="reports/report_2026-01-26_2026-02-01.html">Abrir relatório da semana</a>
+          <div class="pill">Atualizado: 2026-02-03 14:50</div>
+        </div>
+      </div>
+      <div>
+        <div class="hero-media">
+          <img src="assets/thais/5641fad2-f501-4849-a438-c67884f2e6aa.jpg" alt="Thais em prova">
+          <img src="assets/thais/babdb7b9-41a3-44c4-9bc9-f3a5dc9fce2d.jpg" alt="Thais na natacao">
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-3" style="margin-top:16px">
+      <div class="card">
+        <strong>Perfil do Atleta</strong>
+        <div class="muted" style="margin-top:8px">42 anos · 1.63 m · 59.8 kg</div>
+        <div class="muted"> · </div>
+      </div>
+      <div class="card">
+        <strong>Fase Atual</strong>
+        <div style="margin-top:8px">Base Geral (final) -> Build Inicial</div>
+        <div class="muted">Triathlon Sprint (A) + 10 km (B)</div>
+      </div>
+      <div class="card">
+        <strong>Métricas (última semana)</strong>
+        <div class="muted" style="margin-top:8px">CTL 26.1 · ATL 34.7 · TSB -8.6</div>
+        <div class="muted">Compliance: 50.0%</div>
+      </div>
+    </section>
+
+    <section class="kpi-strip">
+      <div class="kpi-bar">
+        <div class="kpi-bar-header">
+          <div class="kpi-bar-title">KPIs Fisiológicos</div>
+          <div class="muted">referência atual</div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-pill">
+            <div class="label">VO2 Corrida</div>
+            <div class="value">49 ml/kg/min</div>
+          </div>
+          <div class="kpi-pill">
+            <div class="label">VO2 Ciclismo</div>
+            <div class="value">49 ml/kg/min</div>
+          </div>
+          <div class="kpi-pill">
+            <div class="label">FTP Bike</div>
+            <div class="value">111 W</div>
+          </div>
+          <div class="kpi-pill">
+            <div class="label">Limiar Corrida</div>
+            <div class="value">168 bpm · 5:24/km</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="grid grid-2 calendar-phase">
+        <div>
+          <h2>Calendário de Provas</h2>
+          <div class="grid">      <div class="event-card tag-b">
+        <div class="event-days">33<span>dias</span></div>
+        <div class="event-info">
+          <div class="event-name">Circuito Oscar Fila (10 km) - Sao Jose dos Campos</div>
+          <div class="event-meta">Corrida 10 km | Prioridade B</div>
+          <div class="event-meta">Estimativa hoje: 1h05min</div>
+          <div class="event-date">08/03/2026</div>
+        </div>
+        <div class="event-tag">Planejada</div>
+      </div>
+      <div class="event-card tag-a">
+        <div class="event-days">82<span>dias</span></div>
+        <div class="event-info">
+          <div class="event-name">Triathlon Sprint - Santos</div>
+          <div class="event-meta">Triathlon Sprint | Prioridade A</div>
+          <div class="event-meta">Estimativa hoje: 1h54min</div>
+          <div class="event-date">26/04/2026</div>
+        </div>
+        <div class="event-tag">Planejada</div>
+      </div>
+      <div class="event-card tag-c">
+        <div class="event-days">173<span>dias</span></div>
+        <div class="event-info">
+          <div class="event-name">Meia Maratona Nike SPCity</div>
+          <div class="event-meta">Corrida 21.1 km | Prioridade C</div>
+          <div class="event-meta">Estimativa hoje: 2h17min</div>
+          <div class="event-date">26/07/2026</div>
+        </div>
+        <div class="event-tag">Planejada</div>
+      </div></div>
+        </div>
+        <div>
+          <h2>Fases do Ano</h2>
+          <div class="card phase-card">
+            <div class="phase-list"><div class="phase-item">
+  <div class="phase-range">03/02-07/03</div>
+  <div class="phase-lines">
+    <div class="phase-line"><strong>Objetivo:</strong> Base Geral (final)</div>
+    <div class="phase-line"><strong>Foco:</strong> especifico 10 km (controle de volume, strides)</div>
+  </div>
+</div>
+<div class="phase-item">
+  <div class="phase-range">09/03-12/04</div>
+  <div class="phase-lines">
+    <div class="phase-line"><strong>Objetivo:</strong> Build Inicial</div>
+    <div class="phase-line"><strong>Foco:</strong> bike Sweet Spot/FTP, swim volume</div>
+  </div>
+</div>
+<div class="phase-item">
+  <div class="phase-range">13/04-26/04</div>
+  <div class="phase-lines">
+    <div class="phase-line"><strong>Objetivo:</strong> Build Especifico Sprint</div>
+    <div class="phase-line"><strong>Foco:</strong> Taper (ultima semana)</div>
+  </div>
+</div>
+<div class="phase-item">
+  <div class="phase-range">27/04-14/06</div>
+  <div class="phase-lines">
+    <div class="phase-line"><strong>Objetivo:</strong> Base/Build 2</div>
+    <div class="phase-line"><strong>Foco:</strong> manter tri, consolidar bike, aumentar swim</div>
+  </div>
+</div>
+<div class="phase-item">
+  <div class="phase-range">15/06-26/07</div>
+  <div class="phase-lines">
+    <div class="phase-line"><strong>Objetivo:</strong> Build Run para Meia</div>
+    <div class="phase-line"><strong>Foco:</strong> progressao long run + ritmo</div>
+  </div>
+</div></div>
+            <div class="phase-summary">
+              <div class="phase-caption">Diretrizes do ciclo</div>
+              <ul class="phase-notes"><li>Foco: Triathlon Sprint (A) + 10 km (B)</li><li>Bike: FTP em desenvolvimento (Sweet Spot)</li><li>Run: Base forte + progressao leve para 10 km</li><li>Swim: Tecnica, sem intensidade (retorno recente) | limiar ~2:20/100m</li><li>Força: 2x/semana (default)</li></ul>
+              <div class="phase-kpis">
+                <div class="phase-kpi">
+                  <div class="label">Volume alvo</div>
+                  <div class="value">4–5 h/sem</div>
+                </div>
+                <div class="phase-kpi">
+                  <div class="label">Intensidade</div>
+                  <div class="value">1–2 sessões Sweet Spot/FTP</div>
+                </div>
+                <div class="phase-kpi">
+                  <div class="label">Força</div>
+                  <div class="value">2x/semana (default)</div>
+                </div>
+              </div>
+              <p class="phase-hint">Revisões semanais consideram sono, HRV e carga (ATL/TSB).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Relatórios Semanais</h2>
+      <div class="grid grid-2"><div class="link-card"><a href="reports/report_2026-01-26_2026-02-01.html">26/01 a 01/02</a></div>
+<div class="link-card"><a href="reports/report_2026-01-19_2026-01-25.html">19/01 a 25/01</a></div>
+<div class="link-card"><a href="reports/report_2026-01-12_2026-01-18.html">12/01 a 18/01</a></div>
+<div class="link-card"><a href="reports/report_2026-01-05_2026-01-11.html">05/01 a 11/01</a></div>
+<div class="link-card"><a href="reports/report_2025-12-29_2026-01-04.html">29/12 a 04/01</a></div>
+<div class="link-card"><a href="reports/report_2025-12-22_2025-12-28.html">22/12 a 28/12</a></div>
+<div class="link-card"><a href="reports/report_2025-12-15_2025-12-21.html">15/12 a 21/12</a></div>
+<div class="link-card"><a href="reports/report_2025-12-08_2025-12-14.html">08/12 a 14/12</a></div></div>
+    </section>
+
+    <section>
+      <h2>Relatórios Anteriores</h2>
+      <div class="grid" style="margin-bottom:12px"><button class="chip" data-month-btn="2026-01">jan 2026</button>
+<button class="chip" data-month-btn="2025-12">dec 2025</button></div>
+      <div class="grid grid-2"><div class="archive-group" data-month-group="2026-01"><div class="link-card"><a href="reports/report_2026-01-26_2026-02-01.html">26/01 a 01/02</a></div>
+<div class="link-card"><a href="reports/report_2026-01-19_2026-01-25.html">19/01 a 25/01</a></div>
+<div class="link-card"><a href="reports/report_2026-01-12_2026-01-18.html">12/01 a 18/01</a></div>
+<div class="link-card"><a href="reports/report_2026-01-05_2026-01-11.html">05/01 a 11/01</a></div></div>
+<div class="archive-group" data-month-group="2025-12"><div class="link-card"><a href="reports/report_2025-12-29_2026-01-04.html">29/12 a 04/01</a></div>
+<div class="link-card"><a href="reports/report_2025-12-22_2025-12-28.html">22/12 a 28/12</a></div>
+<div class="link-card"><a href="reports/report_2025-12-15_2025-12-21.html">15/12 a 21/12</a></div>
+<div class="link-card"><a href="reports/report_2025-12-08_2025-12-14.html">08/12 a 14/12</a></div></div></div>
+    </section>
+  </div>
+  <script>
+    const buttons = document.querySelectorAll('[data-month-btn]');
+    const groups = document.querySelectorAll('[data-month-group]');
+    function setMonth(month){
+      buttons.forEach(b=>b.classList.toggle('active', b.dataset.monthBtn===month));
+      groups.forEach(g=>g.classList.toggle('active', g.dataset.monthGroup===month));
+    }
+    if (buttons.length) {
+      setMonth(buttons[0].dataset.monthBtn);
+      buttons.forEach(b=>b.addEventListener('click',()=>setMonth(b.dataset.monthBtn)));
+    }
+  </script>
+</body>
+</html>

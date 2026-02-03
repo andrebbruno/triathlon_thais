@@ -1,0 +1,659 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relatório de Coaching</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020;
+      --bg-2:#0f172a;
+      --card:#121b34;
+      --card-soft:#0f1a33;
+      --text:#e2e8f0;
+      --muted:#94a3b8;
+      --accent:#5ea3ff;
+      --accent-2:#22c55e;
+      --accent-3:#f59e0b;
+      --accent-4:#ef4444;
+      --accent-run:#22c55e;
+      --accent-ride:#f59e0b;
+      --accent-swim:#38bdf8;
+      --accent-strength:#a855f7;
+      --shadow:0 18px 40px rgba(0,0,0,0.4);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Sora",sans-serif;background:var(--bg);color:var(--text)}
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:radial-gradient(circle at 10% 10%, rgba(94,163,255,0.18), transparent 45%),
+                 radial-gradient(circle at 80% 20%, rgba(34,197,94,0.12), transparent 45%),
+                 radial-gradient(circle at 50% 80%, rgba(245,158,11,0.14), transparent 50%);
+      pointer-events:none;
+      z-index:-1;
+    }
+    .wrap{max-width:1200px;margin:24px auto;padding:0 20px}
+    .hero{background:linear-gradient(135deg,#4f7cff,#6c5bd8);padding:24px;border-radius:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero::after{content:"";position:absolute;right:-80px;top:-80px;width:220px;height:220px;background:rgba(255,255,255,0.12);border-radius:50%}
+    .hero h1{margin:0;font-family:"Space Grotesk",sans-serif;font-size:24px}
+    .hero p{margin:6px 0 0 0;color:#e2e8f0}
+    .hero-pill{background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:999px;font-weight:600}
+    .hero-status{padding:10px 20px;border-radius:14px;font-weight:700}
+    .status-hold{background:#f59e0b;color:#111827}
+    .status-push{background:#22c55e;color:#052e16}
+    .status-stepback{background:#ef4444;color:#fff}
+    .section{margin-top:22px}
+    .card{background:var(--card);padding:18px;border-radius:16px;box-shadow:var(--shadow);border:1px solid rgba(148,163,184,0.12)}
+    .grid{display:grid;gap:16px}
+    .grid-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+    .grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .metric{background:var(--card-soft);padding:14px;border-radius:12px;text-align:center}
+    .metric .value{font-size:20px;font-weight:700}
+    .metric .label{font-size:11px;color:var(--muted)}
+    .performance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .stat-card{background:#151f3b;border-radius:14px;padding:16px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+    .stat-value{font-size:28px;font-weight:700;color:var(--accent)}
+    .stat-label{font-size:12px;color:var(--muted);margin-top:6px}
+    .stat-pill{margin-top:10px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#1f2a4a;font-size:11px;width:max-content}
+    .stat-note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.3}
+    .tsb-high{background:rgba(239,68,68,0.2);color:#ef4444}
+    .tsb-med{background:rgba(245,158,11,0.2);color:#f59e0b}
+    .tsb-low{background:rgba(148,163,184,0.2);color:#cbd5f5}
+    .tsb-good{background:rgba(34,197,94,0.2);color:#22c55e}
+    .comp-good{background:rgba(34,197,94,0.2);color:#22c55e}
+    .comp-mid{background:rgba(245,158,11,0.2);color:#f59e0b}
+    .comp-low{background:rgba(239,68,68,0.2);color:#ef4444}
+    .comp-neutral{background:rgba(148,163,184,0.2);color:#cbd5f5}
+    .race-card{display:flex;align-items:center;gap:18px;background:#151f3b;border-radius:14px;padding:16px;margin-bottom:12px;border-left:4px solid transparent}
+    .race-card.priority-A{border-left-color:var(--accent-3)}
+    .race-card.priority-B{border-left-color:var(--accent)}
+    .race-card.priority-C{border-left-color:var(--accent-2)}
+    .race-days{width:70px;text-align:center}
+    .race-days .days{font-size:26px;font-weight:700;color:#7dd3fc}
+    .race-days .label{font-size:10px;color:var(--muted)}
+    .race-days .sub{font-size:10px;color:var(--muted)}
+    .race-name{font-weight:600}
+    .race-meta{color:var(--muted);font-size:12px}
+    .race-estimate{color:#34d399;font-size:12px;margin-top:4px}
+    .race-status{margin-top:6px;font-size:11px;color:#facc15}
+    .race-badge{margin-left:auto;background:#1f2a4a;padding:6px 12px;border-radius:999px;font-size:11px}
+    .wellness-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+    .wellness-card{background:#151f3b;border-radius:12px;padding:14px;text-align:center}
+    .wellness-card .value{font-size:22px;font-weight:700}
+    .wellness-card .label{font-size:11px;color:var(--muted)}
+    .delta{margin-top:6px;font-size:10px}
+    .delta.pos{color:#22c55e}
+    .delta.neg{color:#ef4444}
+    .delta.neu{color:var(--muted)}
+    .well-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-right:6px}
+    .well-icon svg{width:14px;height:14px}
+    .info-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#1f2a4a;color:#cbd5f5;text-decoration:none;margin-left:6px}
+    .info-icon svg{width:10px;height:10px}
+    .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .phase-grid ul{margin:10px 0 0 18px;color:var(--muted)}
+    .timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px}
+    .timeline .step{background:#151f3b;padding:14px;border-radius:12px;text-align:center}
+    .activity-card{background:#141f3a;border-radius:16px;padding:18px;margin-top:16px;border:1px solid rgba(148,163,184,0.12)}
+    .activity-card.activity-run{border-left:4px solid var(--accent-run)}
+    .activity-card.activity-ride{border-left:4px solid var(--accent-ride)}
+    .activity-card.activity-swim{border-left:4px solid var(--accent-swim)}
+    .activity-card.activity-strength{border-left:4px solid var(--accent-strength)}
+    .activity-title{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+    .activity-icon{width:42px;height:42px;border-radius:12px;background:#1f2a4a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;letter-spacing:.6px}
+    .activity-icon svg,.rec-icon svg{width:20px;height:20px}
+    .activity-icon.run{background:rgba(34,197,94,0.2);color:#22c55e}
+    .activity-icon.ride{background:rgba(245,158,11,0.2);color:#f59e0b}
+    .activity-icon.swim{background:rgba(56,189,248,0.2);color:#38bdf8}
+    .activity-icon.strength{background:rgba(168,85,247,0.2);color:#a855f7}
+    .activity-badge{margin-left:auto;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:600}
+    .quality-ok{background:rgba(34,197,94,0.2);color:#22c55e}
+    .quality-low{background:rgba(148,163,184,0.2);color:#cbd5f5}
+    .quality-high{background:rgba(245,158,11,0.2);color:#f59e0b}
+    .quality-risk{background:rgba(239,68,68,0.2);color:#ef4444}
+    .activity-name{font-weight:600}
+    .activity-date{font-size:12px;color:var(--muted)}
+    .activity-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px}
+    .analysis-block{background:#111827;border-left:4px solid #f59e0b;padding:12px;border-radius:12px}
+    .analysis-title{font-weight:600;margin-bottom:6px}
+    .analysis-summary{margin:0 0 10px 0;color:#e2e8f0;font-size:13px}
+    .analysis-block ul{margin:0 0 0 18px;color:var(--muted)}
+    .analysis-block li{margin-bottom:8px}
+    .coach-card{background:linear-gradient(180deg,#0f274a 0%, #0f1f39 100%);border:1px solid rgba(94,163,255,0.25)}
+    .coach-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+    .coach-icon{width:44px;height:44px;border-radius:50%;background:#38bdf8;display:flex;align-items:center;justify-content:center;color:#0b1020}
+    .coach-icon svg{width:22px;height:22px}
+    .coach-subtitle{font-size:12px;color:var(--muted)}
+    .coach-block{margin-top:14px}
+    .coach-title{font-weight:600;margin-bottom:6px}
+    .coach-block ul,.coach-block ol{margin:6px 0 0 18px;color:var(--muted)}
+    .rec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .rec-card{background:#151f3b;border-radius:14px;padding:16px}
+    .rec-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+    .rec-icon.strength{background:rgba(168,85,247,0.2);color:#e9d5ff}
+    .rec-icon.ride{background:rgba(245,158,11,0.2);color:#fde68a}
+    .rec-icon.run{background:rgba(34,197,94,0.2);color:#bbf7d0}
+    .rec-icon.swim{background:rgba(56,189,248,0.2);color:#bae6fd}
+    .back-link{display:inline-block;margin-bottom:10px;font-size:12px;color:#7dd3fc;text-decoration:none}
+    .rec-title{font-weight:600;margin-bottom:8px}
+    .rec-card ul{margin:0 0 0 16px;color:var(--muted)}
+    .glossary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;color:var(--muted)}
+    .trend-score{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+    .plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px}
+    .plan-card{background:#151f3b;border-radius:14px;padding:14px;border:1px solid rgba(148,163,184,0.12)}
+    .plan-card h3{margin:0 0 8px 0;font-size:16px}
+    .plan-note{margin-top:10px;color:var(--muted);font-size:13px}
+    .score-card{background:#151f3b;border-radius:14px;padding:16px}
+    .score-title{font-size:12px;color:var(--muted)}
+    .score-value{font-size:24px;font-weight:700;margin-top:6px;color:var(--accent)}
+    .score-note{font-size:11px;color:var(--muted);margin-top:6px}
+    .lt-meta{margin-top:12px;font-size:12px;color:var(--muted)}
+    .lt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+    .lt-panel{background:#151f3b;border-radius:14px;padding:16px}
+    .lt-panel h3{margin:0 0 8px 0;font-size:13px}
+    .lt-list{margin:0 0 0 16px;color:var(--muted)}
+    .lt-list li{margin-bottom:6px}
+    .lt-alert li{color:#fca5a5}
+    .lt-empty{font-size:12px;color:var(--muted)}
+    .lt-blocks{display:grid;gap:8px}
+    .lt-block{background:#0f1a33;border-radius:10px;padding:10px;font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Relatório de Coaching</h1>
+      <p>Thais LourenÃ§o | Semana 2026-01-26 a 2026-02-01</p>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="hero-pill">(TBD)</div>
+      <div class="hero-status status-hold">HOLD</div>
+    </div>
+  </div>
+
+  <section class="card section">
+    <h2>Calendário de Provas</h2>
+    
+  </section>
+
+  <section class="card section">
+    <h2>Performance da Semana</h2>
+    <div class="performance-grid">
+  <div class="stat-card">
+    <div class="stat-value">56.8</div>
+    <div class="stat-label">CTL (Fitness)</div>
+    <div class="stat-pill">+2.3</div>
+    <div class="stat-note">Forma fisica acumulada nos ultimos 42 dias.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">73.8</div>
+    <div class="stat-label">ATL (Fadiga)</div>
+    <div class="stat-pill">+2.8</div>
+    <div class="stat-note">Carga de treino dos ultimos 7 dias.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">-17</div>
+    <div class="stat-label">TSB (Forma)</div>
+    <div class="stat-pill tsb-med">Cansado</div>
+    <div class="stat-note">CTL - ATL. Negativo = cansado. Ideal +5 a +15.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">100.0%</div>
+    <div class="stat-label">Compliance</div>
+    <div class="stat-pill comp-good">Excelente</div>
+    <div class="stat-note">Quanto do plano foi executado. Meta: &gt;85%. Planejado: 6 sess | 71h | 141km. Executado: 10 sess | 101h | 1601km.</div>
+  </div>
+</div>
+  </section>
+
+  <section class="card section" id="wellness">
+    <h2>Wellness da Semana</h2>
+    <div class="wellness-grid">
+  <div class="wellness-card">
+    <div class="value">45.7</div>
+    <div class="label"><span class="well-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>FC repouso <a class="info-icon" href="#glossario-wellness" title="Batimentos em repouso; aumento pode indicar fadiga."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="12" y1="7" x2="12.01" y2="7"/></svg></a></div>
+    <div class="delta neu">0 bpm vs base</div>
+  </div>
+  <div class="wellness-card">
+    <div class="value">47.4</div>
+    <div class="label"><span class="well-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0"/></svg></span>HRV <a class="info-icon" href="#glossario-wellness" title="Variabilidade da frequencia cardiaca; baixo sinaliza estresse."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="12" y1="7" x2="12.01" y2="7"/></svg></a></div>
+    <div class="delta neu">0 ms vs base</div>
+  </div>
+  <div class="wellness-card">
+    <div class="value">7.26 h</div>
+    <div class="label"><span class="well-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></span>Sono medio <a class="info-icon" href="#glossario-wellness" title="Horas dormidas; abaixo do ideal reduz recuperacao."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="12" y1="7" x2="12.01" y2="7"/></svg></a></div>
+    <div class="delta neu">0h vs ideal</div>
+  </div>
+  <div class="wellness-card">
+    <div class="value">109.8 kg</div>
+    <div class="label"><span class="well-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 8v4"/><path d="M9 8h6"/></svg></span>Peso <a class="info-icon" href="#glossario-wellness" title="Acompanhar tendencia semanal, nao dia isolado."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="12" y1="7" x2="12.01" y2="7"/></svg></a></div>
+    <div class="delta neu">última medida</div>
+  </div>
+  <div class="wellness-card">
+    <div class="value">1.66</div>
+    <div class="label"><span class="well-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="10"/><line x1="10" y1="20" x2="10" y2="6"/><line x1="16" y1="20" x2="16" y2="14"/><line x1="22" y1="20" x2="22" y2="4"/></svg></span>Monotonia <a class="info-icon" href="#glossario-wellness" title="Variabilidade da carga diaria; alto = risco de estresse."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="12" y1="7" x2="12.01" y2="7"/></svg></a></div>
+    <div class="delta neu">carga diária</div>
+  </div>
+  <div class="wellness-card">
+    <div class="value">446</div>
+    <div class="label"><span class="well-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Strain <a class="info-icon" href="#glossario-wellness" title="Carga semanal total; alto com sono baixo = alerta."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="12" y1="7" x2="12.01" y2="7"/></svg></a></div>
+    <div class="delta neu">carga semanal</div>
+  </div>
+</div>
+  </section>
+
+  <section class="card section">
+    <h2>Fase do Ciclo: (TBD)</h2>
+    <div class="phase-grid">
+      <div>
+        <h3>Objetivo desta fase</h3>
+        <ul><li>Triathlon Sprint + 10 km (secundario)</li><li>Run: Base forte; limiar ~5:10/km</li><li>Swim: Tecnica, sem intensidade (retorno recente) | limiar ~2:20/100m</li></ul>
+      </div>
+      <div>
+        <h3>Transição para Build</h3>
+        <ul><li>Introduzir intervalos de Threshold (bike)</li><li>Tiros curtos na corrida (se joelho permitir)</li><li>Natação: aumentar volume + séries de ritmo</li></ul>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="step">Esta semana<br><strong>HOLD</strong></div>
+      <div class="step">Semana +1<br><strong>Normal</strong></div>
+      <div class="step">Semana +2<br><strong>Volume</strong></div>
+      <div class="step">Semana +3<br><strong>Deload</strong></div>
+    </div>
+  </section>
+
+  <section class="card section">
+    <div class="grid grid-4">
+      <div class="metric"><div class="value">9.9 h</div><div class="label">Tempo total</div></div>
+      <div class="metric"><div class="value">160.3 km</div><div class="label">Distância</div></div>
+      <div class="metric"><div class="value">446</div><div class="label">Carga (TSS)</div></div>
+      <div class="metric"><div class="value">2.3</div><div class="label">RampRate</div></div>
+    </div>
+    <div class="grid grid-4" style="margin-top:12px">
+      <div class="metric"><div class="value">10</div><div class="label">Atividades</div></div>
+      <div class="metric"><div class="value">109.8</div><div class="label">Peso</div></div>
+      <div class="metric"><div class="value">1.66</div><div class="label">Monotonia</div></div>
+      <div class="metric"><div class="value">446</div><div class="label">Strain</div></div>
+    </div>
+  </section>
+
+  
+
+  <section class="card section"><h2>Analise Semanal (resumo)</h2><ul><li>Classificacao: <strong>STEP BACK</strong></li><li>Compliance: 56.2%</li><li>CTL/ATL/TSB: 60 / 86.9 / -26.9</li><li>Sono: 7.74 h</li><li>HRV: 47.3</li><li>FC repouso: 45.1 bpm</li><li><strong>2026-01-26 - Forca - Membros Superiores</strong> -&gt; Executado: Forca - Membros Superiores | Tempo n/a vs 57.1min | Dist n/a vs n/a</li><li><strong>2026-01-26 - Forca - Membros Superiores</strong> -&gt; Executado: Forca - Membros Superiores | Tempo n/a vs 57.1min | Dist n/a vs n/a</li><li><strong>2026-01-27 - Bike - Sweet Spot Controlado</strong> -&gt; Executado: Bike - Sweet Spot Controlado | Tempo 65min vs 65.1min | Dist n/a vs 22.1km</li><li><strong>2026-01-27 - Bike - Sweet Spot</strong> -&gt; Executado: Bike - Sweet Spot Controlado | Tempo 30min vs 65.1min | Dist n/a vs 22.1km</li><li><strong>2026-01-28 - Natao - Tcnico Base</strong> -&gt; <strong>Nao executado</strong></li><li><strong>2026-01-28 - Natacao - Tecnico Base</strong> -&gt; <strong>Nao executado</strong></li><li><strong>2026-01-28 - Run - Tiros Curtos (Manutencao)</strong> -&gt; <strong>Nao executado</strong></li><li><strong>2026-01-28 - Corrida - Easy Aerobico</strong> -&gt; <strong>Nao executado</strong></li><li><strong>2026-01-29 - Forca - Membros Inferiores</strong> -&gt; Executado: Forca | Tempo n/a vs 40min | Dist n/a vs n/a</li><li><strong>2026-01-29 - Bike - Endurance Z2</strong> -&gt; Executado: Bike - Sweet Spot Controlado | Tempo 75min vs 65.1min | Dist n/a vs 22.1km</li><li><strong>2026-01-29 - Bike - Endurance Z2</strong> -&gt; Executado: Bike - Sweet Spot Controlado | Tempo 75min vs 65.1min | Dist n/a vs 22.1km</li><li><strong>2026-01-30 - Natacao - Volume Base</strong> -&gt; <strong>Nao executado</strong></li><li><strong>2026-01-30 - Swim - Tecnica Aerobio Leve</strong> -&gt; <strong>Nao executado</strong></li><li><strong>2026-01-31 - Run - Base Curta Protegida</strong> -&gt; <strong>Nao executado</strong></li><li><strong>2026-02-01 - Bike - Longao Base</strong> -&gt; Executado: Bike - Sweet Spot Controlado | Tempo 90min vs 65.1min | Dist n/a vs 22.1km</li><li><strong>2026-02-01 - Bike - Longao Endurance Limpo</strong> -&gt; Executado: Bike - Sweet Spot Controlado | Tempo 150min vs 65.1min | Dist n/a vs 22.1km</li></ul></section>
+
+  <section class="card section coach-card">
+  <div class="coach-header">
+    <div class="coach-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11a8 8 0 0 1-8 8H7l-4 3 1-5a8 8 0 1 1 17-6z"/></svg></div>
+    <div>
+      <h2>Feedback do Coach</h2>
+      <div class="coach-subtitle">Resumo objetivo da semana</div>
+    </div>
+  </div>
+  <div class="coach-block">
+    <div class="coach-title">Resumo da Semana</div>
+    <p>Voce completou 10 atividades totalizando 9.9h e 446 TSS. Voce esta em sobrecarga moderada (TSB -17). Segurar intensidade e priorizar sono.</p>
+  </div>
+  <div class="coach-block">
+    <div class="coach-title">Progressao de Fitness</div>
+    <p>Seu CTL de 56.8 esta na faixa de fitness moderado. Continue a progressao - meta de CTL 70+ para o 70.3. Compliance de 100.0% - Excelente.</p>
+  </div>
+  <div class="coach-block">
+    <div class="coach-title">Analise por Modalidade</div>
+    <ul><li>Natacao abaixo do ideal (12.8%). Para triathlon, busque 20-25% do volume.</li><li>Bike como principal modalidade (59.7%) - coerente com fase e protecao do joelho.</li><li>Volume de corrida controlado (11.2%) - bom para protecao do joelho.</li><li>Forca presente (16.3%) - manter 2x/semana.</li></ul>
+  </div>
+  <div class="coach-block">
+    <div class="coach-title">Foco para Proxima Semana</div>
+    <p>Proximas provas monitoradas no calendario. </p>
+    <ol><li>Consistencia sobre intensidade - 3x natacao, 3x bike, 2x corrida, 2x forca</li><li>Qualidade tecnica - cada sessao e oportunidade de melhorar eficiencia</li><li>Recuperacao - sono, nutricao e estresse impactam adaptacao</li></ol>
+  </div>
+  <div class="coach-block">
+    <div class="coach-title">Proximo Passo</div>
+    <p>Preencha sua autoavaliacao. Sua percepcao subjetiva e tao importante quanto os numeros.</p>
+  </div>
+</section>
+
+  <section class="card section">
+    <h2>Gráficos</h2>
+    <div class="grid grid-2">
+      <div class="card"><canvas id="dist-chart"></canvas></div>
+      <div class="card"><canvas id="pmc-chart"></canvas></div>
+      <div class="card"><canvas id="well-chart"></canvas></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Análise das Atividades</h2>
+    <div class="activity-card activity-strength">
+  <div class="activity-title">
+    <div class="activity-icon strength"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4M7 8v8M17 8v8M21 10v4"/><path d="M7 12h10"/></svg></div>
+    <div>
+      <div class="activity-name">For&#231;a - Membros Superiores</div>
+      <div class="activity-date">2026-01-26</div>
+    </div>
+    <div class="activity-badge quality-low">Sem alvo</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">57min</div><div class="label">Duração</div></div><div class="metric"><div class="value">14</div><div class="label">TSS</div></div><div class="metric"><div class="value">92 bpm</div><div class="label">FC média</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Forca sem alvo definido. FC controlada. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Forca para estabilidade, prevencao de lesao e suporte ao triathlon.</li><li><strong>Planejado vs executado:</strong> Sem planejado encontrado.</li><li><strong>Intensidade:</strong> Potência - | NP - | VI - | IF - | HR 92 bpm</li><li><strong>Wellness do dia:</strong> Sono 8.6h (+1.6h) | HRV 43.0 (-13 ms) | FC 46 (+1 bpm) | Alerta: HRV baixa</li><li><strong>Recomendação:</strong> Manter consistência.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-strength">
+  <div class="activity-title">
+    <div class="activity-icon strength"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4M7 8v8M17 8v8M21 10v4"/><path d="M7 12h10"/></svg></div>
+    <div>
+      <div class="activity-name">For&#231;a</div>
+      <div class="activity-date">2026-01-27</div>
+    </div>
+    <div class="activity-badge quality-low">Sem alvo</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">40min</div><div class="label">Duração</div></div><div class="metric"><div class="value">6</div><div class="label">TSS</div></div><div class="metric"><div class="value">79 bpm</div><div class="label">FC média</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Forca sem alvo definido. FC controlada. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Forca para estabilidade, prevencao de lesao e suporte ao triathlon.</li><li><strong>Planejado vs executado:</strong> Sem planejado encontrado.</li><li><strong>Intensidade:</strong> Potência - | NP - | VI - | IF - | HR 79 bpm</li><li><strong>Wellness do dia:</strong> Sono 7.6h (+0.6h) | HRV 48.0 (-8 ms) | FC 45 (0 bpm) | Alerta: HRV baixa</li><li><strong>Sua nota:</strong> Foco em exercicios de peito</li><li><strong>Recomendação:</strong> Manter consistência.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-ride">
+  <div class="activity-title">
+    <div class="activity-icon ride"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17l5-8h4l4 8M10 9h4"/></svg></div>
+    <div>
+      <div class="activity-name">Bike - Sweet Spot Controlado</div>
+      <div class="activity-date">2026-01-27</div>
+    </div>
+    <div class="activity-badge quality-ok">Dentro</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">65min</div><div class="label">Duração</div></div><div class="metric"><div class="value">22.1km</div><div class="label">Distância</div></div><div class="metric"><div class="value">20.4 km/h</div><div class="label">Velocidade</div></div><div class="metric"><div class="value">49</div><div class="label">TSS</div></div><div class="metric"><div class="value">121 bpm</div><div class="label">FC média</div></div><div class="metric"><div class="value">160W</div><div class="label">Potência</div></div><div class="metric"><div class="value">168W</div><div class="label">NP</div></div><div class="metric"><div class="value">1.51</div><div class="label">IF</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Ciclismo dentro do alvo. Volume alinhado ao planejado. FC controlada. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Sweet Spot para elevar limiar e sustentar potencia com controle.</li><li><strong>Planejado vs executado:</strong> Planejado: 65min • 138-170W | Executado: 65min • 22.1km • 160W | Delta tempo +0.1min • Intensidade: Dentro do alvo</li><li><strong>Intensidade:</strong> Potência 160W | NP 168W | VI 1.05 | IF 1.51 | HR 121 bpm</li><li><strong>Wellness do dia:</strong> Sono 7.6h (+0.6h) | HRV 48.0 (-8 ms) | FC 45 (0 bpm) | Alerta: HRV baixa</li><li><strong>Sua nota:</strong> Treino tranquilo, por&#195;&#169;m fiquei mais em z2 do que imaginava. Fico pensando se meu FTP n&#195;&#163;o precisa ser ajustado? Talvez um novo teste de FTP?</li><li><strong>Recomendação:</strong> Manter consistência.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-run">
+  <div class="activity-title">
+    <div class="activity-icon run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 6 12 9 6 13 18 16 12 21 12"/></svg></div>
+    <div>
+      <div class="activity-name">Trememb&#233; - Run - Tiros Curtos (Manutencao)</div>
+      <div class="activity-date">2026-01-28</div>
+    </div>
+    <div class="activity-badge quality-ok">Dentro</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">40min</div><div class="label">Duração</div></div><div class="metric"><div class="value">6.2km</div><div class="label">Distância</div></div><div class="metric"><div class="value">6:31/km</div><div class="label">Pace</div></div><div class="metric"><div class="value">40</div><div class="label">TSS</div></div><div class="metric"><div class="value">142 bpm</div><div class="label">FC média</div></div><div class="metric"><div class="value">351W</div><div class="label">Potência</div></div><div class="metric"><div class="value">378W</div><div class="label">NP</div></div><div class="metric"><div class="value">1.35</div><div class="label">IF</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Corrida dentro do alvo. Volume alinhado ao planejado. FC controlada. Wellness baixo (sono baixo, HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Intervalos para estimular VO2 e velocidade.</li><li><strong>Planejado vs executado:</strong> Planejado: 41min • 6.1km • 06:20-06:40/km | Executado: 40min • 6.2km • 351W • 6:31/km | Delta tempo -0.6min • Delta dist +0.1km • Intensidade: Dentro do alvo</li><li><strong>Pace vs threshold:</strong> 6:31/km (+1:01/km)</li><li><strong>Intensidade:</strong> Potência 351W | NP 378W | IF 1.35 | HR 142 bpm</li><li><strong>Joelho:</strong> manter protocolo e nao progredir se dor > 4/10.</li><li><strong>Wellness do dia:</strong> Sono 6.4h (-0.6h) | HRV 46.0 (-10 ms) | FC 46 (+1 bpm) | Alerta: sono baixo, HRV baixa</li><li><strong>Sua nota:</strong> Corrida excelente, dor no joelho diminuiu ... 2/10.</li><li><strong>Recomendação:</strong> Manter volume protegido até joelho < 4/10.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-ride">
+  <div class="activity-title">
+    <div class="activity-icon ride"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17l5-8h4l4 8M10 9h4"/></svg></div>
+    <div>
+      <div class="activity-name">Bike - Endurance Z2</div>
+      <div class="activity-date">2026-01-29</div>
+    </div>
+    <div class="activity-badge quality-low">Abaixo</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">87min</div><div class="label">Duração</div></div><div class="metric"><div class="value">38.6km</div><div class="label">Distância</div></div><div class="metric"><div class="value">26.6 km/h</div><div class="label">Velocidade</div></div><div class="metric"><div class="value">81</div><div class="label">TSS</div></div><div class="metric"><div class="value">115 bpm</div><div class="label">FC média</div></div><div class="metric"><div class="value">164W</div><div class="label">Potência</div></div><div class="metric"><div class="value">187W</div><div class="label">NP</div></div><div class="metric"><div class="value">1.68</div><div class="label">IF</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Ciclismo abaixo do alvo. Volume acima do planejado. FC controlada. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Base aerobica para eficiencia metabolica e resistencia.</li><li><strong>Planejado vs executado:</strong> Planejado: 75min • 165-175W | Executado: 87min • 38.6km • 164W | Delta tempo +12min • Intensidade: Abaixo do alvo (1W)</li><li><strong>Intensidade:</strong> Potência 164W | NP 187W | VI 1.14 | IF 1.68 | HR 115 bpm</li><li><strong>Wellness do dia:</strong> Sono 7.5h (+0.5h) | HRV 50.0 (-6 ms) | FC 42 (-3 bpm) | Alerta: HRV baixa</li><li><strong>Recomendação:</strong> Redução de carga ok dado wellness baixo; foco em sono.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-swim">
+  <div class="activity-title">
+    <div class="activity-icon swim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M3 21c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><circle cx="7" cy="7" r="2"/><path d="M9 9l4 2"/></svg></div>
+    <div>
+      <div class="activity-name">Desenvolvedor de t&#233;cnica 2</div>
+      <div class="activity-date">2026-01-29</div>
+    </div>
+    <div class="activity-badge quality-low">Sem alvo</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">39min</div><div class="label">Duração</div></div><div class="metric"><div class="value">2000m</div><div class="label">Distância</div></div><div class="metric"><div class="value">1:58/100m</div><div class="label">Pace 100m</div></div><div class="metric"><div class="value">27</div><div class="label">TSS</div></div><div class="metric"><div class="value">128 bpm</div><div class="label">FC média</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Natacao sem alvo definido. FC controlada. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Natacao aerobica com foco tecnico.</li><li><strong>Planejado vs executado:</strong> Sem planejado encontrado.</li><li><strong>Intensidade:</strong> Pace 1:58/100m | Volume 2000m</li><li><strong>Wellness do dia:</strong> Sono 7.5h (+0.5h) | HRV 50.0 (-6 ms) | FC 42 (-3 bpm) | Alerta: HRV baixa</li><li><strong>Recomendação:</strong> Manter consistência.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-swim">
+  <div class="activity-title">
+    <div class="activity-icon swim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M3 21c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><circle cx="7" cy="7" r="2"/><path d="M9 9l4 2"/></svg></div>
+    <div>
+      <div class="activity-name">Natacao - Volume Base</div>
+      <div class="activity-date">2026-01-30</div>
+    </div>
+    <div class="activity-badge quality-low">Sem alvo</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">37min</div><div class="label">Duração</div></div><div class="metric"><div class="value">2000m</div><div class="label">Distância</div></div><div class="metric"><div class="value">1:51/100m</div><div class="label">Pace 100m</div></div><div class="metric"><div class="value">21</div><div class="label">TSS</div></div><div class="metric"><div class="value">119 bpm</div><div class="label">FC média</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Natacao sem alvo definido. Volume acima do planejado. FC controlada.</p><ul><li><strong>Objetivo:</strong> Base aerobica para eficiencia metabolica e resistencia.</li><li><strong>Planejado vs executado:</strong> Planejado: 24min • 1200m | Executado: 37min • 2000m | Delta tempo +13min • Delta dist +800m • Intensidade: Sem alvo detalhado no plano.</li><li><strong>Intensidade:</strong> Pace 1:51/100m | Volume 2000m</li><li><strong>Wellness do dia:</strong> Sono 6.8h (-0.2h) | HRV 55.0 (-1 ms) | FC 45 (0 bpm)</li><li><strong>Recomendação:</strong> Manter consistência.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-run">
+  <div class="activity-title">
+    <div class="activity-icon run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 6 12 9 6 13 18 16 12 21 12"/></svg></div>
+    <div>
+      <div class="activity-name">T2 com a Enjoy</div>
+      <div class="activity-date">2026-01-31</div>
+    </div>
+    <div class="activity-badge quality-ok">Dentro</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">26min</div><div class="label">Duração</div></div><div class="metric"><div class="value">4.0km</div><div class="label">Distância</div></div><div class="metric"><div class="value">6:35/km</div><div class="label">Pace</div></div><div class="metric"><div class="value">26</div><div class="label">TSS</div></div><div class="metric"><div class="value">165 bpm</div><div class="label">FC média</div></div><div class="metric"><div class="value">369W</div><div class="label">Potência</div></div><div class="metric"><div class="value">377W</div><div class="label">NP</div></div><div class="metric"><div class="value">1.35</div><div class="label">IF</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Corrida sem alvo definido. Volume abaixo do planejado. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Base aerobica para eficiencia metabolica e resistencia.</li><li><strong>Planejado vs executado:</strong> Planejado: 45min • 6.3km • 06:50-07:30/km | Executado: 26min • 4.0km • 369W • 6:35/km | Delta tempo -18.7min • Delta dist -2.3km • Intensidade: Mais r&#225;pido que o alvo</li><li><strong>Pace vs threshold:</strong> 6:35/km (+1:04/km)</li><li><strong>Intensidade:</strong> Potência 369W | NP 377W | IF 1.35 | HR 165 bpm</li><li><strong>Joelho:</strong> manter protocolo e nao progredir se dor > 4/10.</li><li><strong>Wellness do dia:</strong> Sono 6.9h (-0.1h) | HRV 45.0 (-11 ms) | FC 47 (+2 bpm) | Alerta: HRV baixa</li><li><strong>Sua nota:</strong> dor no joelho 2/10. Me senti bem, creio que d&#195;&#161; pra seguir ou aumentar um pouco a carga.</li><li><strong>Recomendação:</strong> Manter volume protegido até joelho < 4/10.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-ride">
+  <div class="activity-title">
+    <div class="activity-icon ride"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17l5-8h4l4 8M10 9h4"/></svg></div>
+    <div>
+      <div class="activity-name">T2 com a Enjoy</div>
+      <div class="activity-date">2026-01-31</div>
+    </div>
+    <div class="activity-badge quality-low">Sem alvo</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">77min</div><div class="label">Duração</div></div><div class="metric"><div class="value">35.9km</div><div class="label">Distância</div></div><div class="metric"><div class="value">28.1 km/h</div><div class="label">Velocidade</div></div><div class="metric"><div class="value">88</div><div class="label">TSS</div></div><div class="metric"><div class="value">130 bpm</div><div class="label">FC média</div></div><div class="metric"><div class="value">179W</div><div class="label">Potência</div></div><div class="metric"><div class="value">207W</div><div class="label">NP</div></div><div class="metric"><div class="value">1.86</div><div class="label">IF</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Ciclismo sem alvo definido. FC controlada. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Sessao de ciclismo para evolucao aerobica.</li><li><strong>Planejado vs executado:</strong> Sem planejado encontrado.</li><li><strong>Intensidade:</strong> Potência 179W | NP 207W | VI 1.16 | IF 1.86 | HR 130 bpm</li><li><strong>Wellness do dia:</strong> Sono 6.9h (-0.1h) | HRV 45.0 (-11 ms) | FC 47 (+2 bpm) | Alerta: HRV baixa</li><li><strong>Sua nota:</strong> Pedal social parte de um treino de T2, que estava fora do planejamento.</li><li><strong>Recomendação:</strong> Manter consistência.</li></ul>
+  </div>
+</div>
+<div class="activity-card activity-ride">
+  <div class="activity-title">
+    <div class="activity-icon ride"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17l5-8h4l4 8M10 9h4"/></svg></div>
+    <div>
+      <div class="activity-name">Regenerativo Z1-Z2</div>
+      <div class="activity-date">2026-02-01</div>
+    </div>
+    <div class="activity-badge quality-low">Abaixo</div>
+  </div>
+  <div class="activity-metrics">
+    <div class="metric"><div class="value">126min</div><div class="label">Duração</div></div><div class="metric"><div class="value">49.5km</div><div class="label">Distância</div></div><div class="metric"><div class="value">23.5 km/h</div><div class="label">Velocidade</div></div><div class="metric"><div class="value">94</div><div class="label">TSS</div></div><div class="metric"><div class="value">110 bpm</div><div class="label">FC média</div></div><div class="metric"><div class="value">140W</div><div class="label">Potência</div></div><div class="metric"><div class="value">167W</div><div class="label">NP</div></div><div class="metric"><div class="value">1.5</div><div class="label">IF</div></div>
+  </div>
+  <div class="analysis-block">
+    <div class="analysis-title">Análise Completa</div>
+    <p class="analysis-summary">Ciclismo abaixo do alvo. Volume abaixo do planejado. FC controlada. Wellness baixo (HRV baixa) pode ter influenciado.</p><ul><li><strong>Objetivo:</strong> Base aerobica para eficiencia metabolica e resistencia.</li><li><strong>Planejado vs executado:</strong> Planejado: 150min • 165-180W | Executado: 126min • 49.5km • 140W | Delta tempo -23.7min • Intensidade: Abaixo do alvo (25W)</li><li><strong>Intensidade:</strong> Potência 140W | NP 167W | VI 1.19 | IF 1.5 | HR 110 bpm</li><li><strong>Wellness do dia:</strong> Sono 7h (0h) | HRV 45.0 (-11 ms) | FC 49 (+4 bpm) | Alerta: HRV baixa</li><li><strong>Recomendação:</strong> Redução de carga ok dado wellness baixo; foco em sono.</li></ul>
+  </div>
+</div>
+  </section>
+
+  <section class="card section">
+    <h2>Tendencias Longo Prazo (12 semanas)</h2>
+    <div class="performance-grid">
+  <div class="stat-card">
+    <div class="stat-value">56.8</div>
+    <div class="stat-label">CTL atual</div>
+    <div class="stat-pill">+23.3</div>
+    <div class="stat-note">Evolucao nas ultimas 12 semanas.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">382</div>
+    <div class="stat-label">TSS medio 4s</div>
+    <div class="stat-pill">+12</div>
+    <div class="stat-note">Comparado com as 4 semanas anteriores.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">7.15 h</div>
+    <div class="stat-label">Sono medio 4s</div>
+    <div class="stat-pill">0h</div>
+    <div class="stat-note">Tendencia recente de recuperacao.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">111.6</div>
+    <div class="stat-label">Peso atual</div>
+    <div class="stat-pill">-1.5kg</div>
+    <div class="stat-note">Variacao desde o inicio do periodo.</div>
+  </div>
+</div>
+<div class="trend-score">
+  <div class="score-card">
+    <div class="score-title">Performance Score</div>
+    <div class="score-value">63</div>
+    <div class="score-note">CTL + TSB + RampRate</div>
+  </div>
+  <div class="score-card">
+    <div class="score-title">Recovery Status</div>
+    <div class="score-value">BOM</div>
+    <div class="score-note">Sono, HRV, FC repouso e TSB</div>
+  </div>
+</div>
+
+<div class="lt-meta">Longo prazo: 2025-11-05 a 2026-01-28</div>
+<div class="lt-grid">
+  <div class="lt-panel">
+    <h3>Insights</h3>
+    <ul class="lt-list"><li>OK Excelente progressao de fitness: CTL aumentou 74%</li><li>Consistencia: 100% (12/12 semanas ativas)</li><li>Proporcao media: Bike 60% | Run 9% | Swim 10%</li></ul>
+  </div>
+  <div class="lt-panel">
+    <h3>Alertas</h3>
+    <div class="lt-empty">Sem alertas.</div>
+  </div>
+  <div class="lt-panel">
+    <h3>Blocos 4 semanas</h3>
+    <div class="lt-blocks"><div class="lt-block"><strong>Bloco 1</strong><div>05/11 - 26/11</div><div>TSS: 352.0</div><div>CTL: 40.3 | TSB: 0.0</div></div><div class="lt-block"><strong>Bloco 2</strong><div>03/12 - 24/12</div><div>TSS: 370.0</div><div>CTL: 48.9 | TSB: 0.0</div></div><div class="lt-block"><strong>Bloco 3</strong><div>31/12 - 21/01</div><div>TSS: 382.0</div><div>CTL: 54.8 | TSB: 0.0</div></div></div>
+  </div>
+</div>
+    <div class="grid grid-2" style="margin-top:16px">
+            <div class="card"><canvas id="trend-load-chart"></canvas></div>
+      <div class="card"><canvas id="trend-tss-chart"></canvas></div>
+      <div class="card"><canvas id="trend-well-chart"></canvas></div>
+      <div class="card"><canvas id="trend-modality-chart"></canvas></div>
+      <div class="card"><canvas id="trend-bike-chart"></canvas></div>
+      <div class="card"><canvas id="trend-run-chart"></canvas></div>
+      <div class="card"><canvas id="trend-zone-bike"></canvas></div>
+      <div class="card"><canvas id="trend-zone-run"></canvas></div>
+    </div>
+  </section>
+
+    <section class="card section">
+    <h2>Plano de Longo Prazo</h2>
+    <div class="plan-grid">
+      <div class="plan-card">
+        <h3>Rota até Prova A</h3>
+        <div><strong>Triathlon Sprint - Santos</strong> 26/04/2026</div>
+        <div style="margin-top:6px">Faltam <strong>84 dias</strong> (referência: semana atual)</div>
+      </div>
+      <div class="plan-card">
+        <h3>Calendário de fases</h3>
+        <ul><li>Sem fases futuras cadastradas.</li></ul>
+      </div>
+    </div>
+    <div class="plan-note">As transições tendem a ocorrer nos períodos acima e podem ser ajustadas conforme resposta do corpo, joelho e proximidade da prova principal.</div>
+  </section>
+
+  <section class="card section">
+  <h2>Recomendacoes Tecnicas</h2>
+  <div class="rec-grid">
+    <div class="rec-card">
+      <div class="rec-icon strength"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4M7 8v8M17 8v8M21 10v4"/><path d="M7 12h10"/></svg></div>
+      <div class="rec-title">Forca</div>
+      <ul>
+        <li>Gluteo medio/maximo (estabilidade no pedal e corrida)</li>
+        <li>Core anti-rotacao (natacao e bike aero)</li>
+        <li>Panturrilha excêntrica (protecao tendao Aquiles)</li>
+        <li>Mobilidade de quadril (posicao aero)</li>
+      </ul>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon ride"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M5 17l5-8h4l4 8M10 9h4"/></svg></div>
+      <div class="rec-title">Ciclismo</div>
+      <ul>
+        <li>Cadencia: manter 85-95 rpm em Z2</li>
+        <li>Pedalada redonda: foco no &quot;puxar&quot; (11h-2h)</li>
+        <li>Posicao aero: aumentar tempo gradualmente</li>
+        <li>Sweet Spot: progressao para Build</li>
+      </ul>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 6 12 9 6 13 18 16 12 21 12"/></svg></div>
+      <div class="rec-title">Corrida</div>
+      <ul>
+        <li>Cadencia alta (175-180 spm) para reduzir impacto</li>
+        <li>Aterrissagem medio-pe</li>
+        <li>Volume protegido ate joelho &lt; 3/10</li>
+        <li>Fortalecimento: step-ups, agachamento unilateral</li>
+      </ul>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon swim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M3 21c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><circle cx="7" cy="7" r="2"/><path d="M9 9l4 2"/></svg></div>
+      <div class="rec-title">Natacao</div>
+      <ul>
+        <li>Rotacao de quadril (nao so ombros)</li>
+        <li>Cotovelo alto na puxada</li>
+        <li>Respiracao bilateral</li>
+        <li>Aumentar frequencia: 3x/semana minimo</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  <section class="card section" id="glossario-wellness">
+  <h2>Glossario Wellness</h2>
+  <a class="back-link" href="#wellness">Voltar ao Wellness</a>
+  <div class="glossary-grid">
+    <div><strong>FC repouso:</strong> batimentos em repouso; aumento pode indicar fadiga.</div>
+    <div><strong>HRV:</strong> variabilidade da frequencia cardiaca; baixo sinaliza estresse.</div>
+    <div><strong>Sono medio:</strong> horas dormidas; abaixo do ideal reduz recuperacao.</div>
+    <div><strong>Peso:</strong> acompanhamento semanal; use tendencia, nao dia isolado.</div>
+    <div><strong>Monotonia:</strong> variabilidade da carga diaria; alto = risco de estresse.</div>
+    <div><strong>Strain:</strong> carga semanal; alto com sono baixo = alerta.</div>
+  </div>
+</section>
+</div>
+<script>
+  new Chart(document.getElementById('dist-chart'),{type:'doughnut',data:{labels:["Ride","Run","Swim","WeightTraining"],datasets:[{data:[5.92,1.11,1.27,1.62],backgroundColor:['#60a5fa','#22c55e','#f59e0b','#94a3b8']}]},options:{plugins:{legend:{position:'bottom'}},cutout:'60%'}});
+  new Chart(document.getElementById('pmc-chart'),{type:'line',data:{labels:["2026-01-26","2026-01-27","2026-01-28","2026-01-29","2026-01-30","2026-01-31","2026-02-01"],datasets:[{label:'CTL',data:[54.5,54.4,54.0,55.3,54.5,55.9,56.8],borderColor:'#60a5fa',tension:.3},{label:'ATL',data:[71.0,68.8,65.0,70.7,64.1,70.7,73.8],borderColor:'#f59e0b',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('well-chart'),{type:'line',data:{labels:["2026-01-26","2026-01-27","2026-01-28","2026-01-29","2026-01-30","2026-01-31","2026-02-01"],datasets:[{label:'Sono (h)',data:[8.6,7.6,6.4,7.5,6.8,6.9,7],borderColor:'#22c55e',tension:.3},{label:'HRV',data:[43.0,48.0,46.0,50.0,55.0,45.0,45.0],borderColor:'#60a5fa',tension:.3},{label:'FC Repouso',data:[46,45,46,42,45,47,49],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+    new Chart(document.getElementById('trend-load-chart'),{type:'line',data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{label:'CTL',data:[31.5,36.9,36.2,40.3,43.5,43.0,45.0,48.9,48.7,49.9,51.4,54.8],borderColor:'#60a5fa',tension:.3},{label:'ATL',data:[55.6,60.9,42.9,60.2,62.3,45.9,56.7,69.5,57.8,58.2,60.6,71.1],borderColor:'#f59e0b',tension:.3},{label:'TSB',data:[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],borderColor:'#22c55e',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-tss-chart'),{data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{type:'bar',label:'TSS',data:[362.0,437.0,210.0,400.0,401.0,232.0,398.0,447.0,321.0,348.0,397.0,463.0],backgroundColor:'rgba(94,163,255,0.4)'},{type:'line',label:'Horas',data:[10.7,9.8,6.9,9.6,9.9,4.1,10.1,9.2,8.8,9.0,8.5,9.7],borderColor:'#f59e0b',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-well-chart'),{type:'line',data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{label:'Sono',data:[6.7,6.9,7.1,7.6,7.4,7.3,7.0,6.9,7.0,7.0,7.2,7.4],borderColor:'#22c55e',tension:.3},{label:'HRV',data:[44.7,42.8,44.7,44.0,42.3,44.5,48.0,46.8,46.2,43.3,48.6,47.0],borderColor:'#60a5fa',tension:.3},{label:'FC Repouso',data:[49.0,47.7,51.2,52.2,52.2,50.8,50.2,52.2,50.3,51.3,48.8,48.3],borderColor:'#ef4444',tension:.3},{label:'Peso',data:[113.1,111.8,null,111.2,111.3,null,112.2,null,111.1,110.7,111.7,111.6],borderColor:'#a855f7',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-modality-chart'),{type:'bar',data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{label:'Bike %',data:[75.2,69.1,37.3,50.7,70.8,53.5,51.4,72.9,57.9,64.2,61.8,58.9],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Run %',data:[5.4,8.4,20.5,11.2,0.0,16.0,10.6,9.5,10.0,0.0,6.9,7.6],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Swim %',data:[5.2,7.5,9.9,7.1,7.4,11.8,16.9,17.6,10.0,11.6,10.1,6.8],backgroundColor:'rgba(56,189,248,0.35)'},{label:'Forca %',data:[14.2,15.1,32.3,30.9,21.8,18.7,21.1,0.0,22.2,24.2,21.2,26.7],backgroundColor:'rgba(168,85,247,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+  new Chart(document.getElementById('trend-bike-chart'),{type:'line',data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{label:'Bike IF',data:[0.7478571428571428,0.8883333333333333,0.75,0.8787499999999999,0.7883333333333334,1.05,0.8916666666666666,0.7933333333333333,0.8266666666666667,0.8866666666666667,0.9700000000000001,0.9962500000000001],borderColor:'#f59e0b',tension:.3},{label:'Bike VI',data:[1.0885714285714285,1.2278333333333336,1.24,1.12225,1.1258333333333335,1.107,1.1376666666666668,1.265,1.1206666666666667,1.1700000000000002,1.149,1.12375],borderColor:'#94a3b8',tension:.3},{label:'Bike Decoupling %',data:[4.702857142857143,7.528333333333333,13.875,12.75,11.198333333333332,-1.6149999999999998,14.233333333333334,14.069999999999999,8.39,11.683333333333335,9.333333333333334,3.7675],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-run-chart'),{type:'line',data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{label:'Cadencia Run',data:[90.50411,87.27535,86.47855200000001,87.330894,null,89.1048,82.861336,86.65358499999999,84.24502,null,87.32306,86.02958699999999],borderColor:'#22c55e',tension:.3},{label:'Decoupling Run %',data:[2.04,13.04,0.645,11.2,null,-1.0,17.33,9.285,14.21,null,12.41,5.6899999999999995],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-zone-bike'),{type:'bar',data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{label:'Z1',data:[58.5,39.5,39.1,30.6,37.4,7.2,23.3,33.8,24.2,25.6,21.3,17.7],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[28.2,31.5,40.5,34.0,41.0,33.4,54.6,30.9,52.2,48.9,43.3,45.1],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[13.3,29.0,20.4,35.4,21.6,59.4,22.1,35.3,23.6,25.5,35.4,37.1],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+  new Chart(document.getElementById('trend-zone-run'),{type:'bar',data:{labels:["05/11","12/11","19/11","26/11","03/12","10/12","17/12","24/12","31/12","07/01","14/01","21/01"],datasets:[{label:'Z1',data:[0.3,2.1,3.4,2.8,null,0.8,12.5,0.8,8.5,null,3.0,10.9],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[0.3,1.0,3.9,2.2,null,1.7,19.1,3.9,11.1,null,1.9,39.7],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[99.4,96.9,92.7,95.0,null,97.5,68.3,95.3,80.4,null,95.1,49.5],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+</script>
+</body>
+</html>
