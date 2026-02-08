@@ -30,7 +30,8 @@ $IncludeWeekNotesInReport = $false
 function Html-Escape {
   param([string]$Text)
   if ($null -eq $Text) { return "" }
-  return [System.Net.WebUtility]::HtmlEncode($Text)
+  $t = Fix-TextEncoding -Text $Text
+  return [System.Net.WebUtility]::HtmlEncode($t)
 }
 
 function Should-RebuildReportHtml {
@@ -55,16 +56,105 @@ function Should-RebuildReportHtml {
 function Fix-TextEncoding {
   param([string]$Text)
   if (-not $Text) { return "" }
-  if ($Text -match "Ãƒ|Ã‚|Ã¢|Ã£|Ã§") {
+  # Heuristic: most mojibake we see from API responses includes "Ã" / "Â" sequences.
+  if ($Text -match "[ÃÂ]") {
     try {
       $fixed = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::GetEncoding("Windows-1252").GetBytes($Text))
-      if ($fixed -match "Ãƒ|Ã‚|Ã¢|Ã£|Ã§") {
+      if ($fixed -match "[ÃÂ]") {
         $fixed = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::GetEncoding("ISO-8859-1").GetBytes($Text))
       }
       return $fixed
     } catch { return $Text }
   }
   return $Text
+}
+
+function Is-OffPlannedEvent {
+  param([object]$Event)
+
+  if (-not $Event) { return $false }
+  $name = Fix-TextEncoding -Text ([string]$Event.name)
+  if ($name -and $name.Trim().ToUpperInvariant() -eq "OFF") { return $true }
+
+  $desc = Fix-TextEncoding -Text ([string]$Event.description)
+  if ($desc -and $desc -match "(?i)descanso") { return $true }
+
+  return $false
+}
+
+function Get-PlanAdherenceSummary {
+  param(
+    [object[]]$PlannedEvents,
+    [object[]]$Activities
+  )
+
+  $planned = if ($PlannedEvents) { @($PlannedEvents) } else { @() }
+  $acts = if ($Activities) { @($Activities) } else { @() }
+
+  $plannedOff = @($planned | Where-Object { Is-OffPlannedEvent -Event $_ })
+  $plannedWorkouts = @($planned | Where-Object { -not (Is-OffPlannedEvent -Event $_) })
+
+  $activityIds = New-Object System.Collections.Generic.HashSet[string]
+  foreach ($a in $acts) {
+    if ($a.id) { [void]$activityIds.Add([string]$a.id) }
+  }
+
+  $matchedEventIds = New-Object System.Collections.Generic.HashSet[string]
+  foreach ($a in $acts) {
+    if ($a.planejado -and $a.planejado.event_id) {
+      [void]$matchedEventIds.Add([string]$a.planejado.event_id)
+    }
+  }
+
+  $doneWorkouts = 0
+  $missedWorkouts = @()
+  foreach ($p in $plannedWorkouts) {
+    $eventId = [string]$p.event_id
+    $pairedId = [string]$p.paired_activity_id
+    $matched = $false
+
+    if ($pairedId -and $activityIds.Contains($pairedId)) { $matched = $true }
+    elseif ($eventId -and $matchedEventIds.Contains($eventId)) { $matched = $true }
+
+    if ($matched) { $doneWorkouts += 1 } else { $missedWorkouts += $p }
+  }
+
+  $offRespected = 0
+  $offBroken = 0
+  $offBrokenDates = @()
+  foreach ($p in $plannedOff) {
+    $d = [string]$p.start_date
+    $hasActivity = $false
+    if ($d) {
+      $hasActivity = (@($acts | Where-Object { $_.start_date_local -eq $d } | Select-Object -First 1) -ne $null)
+    }
+    if (-not $hasActivity) { $offRespected += 1 } else { $offBroken += 1; if ($d) { $offBrokenDates += $d } }
+  }
+
+  $extras = @($acts | Where-Object { $_.planejado -eq $null })
+
+  $overallValue = $null
+  $workoutValue = $null
+  if ($planned.Count -gt 0) {
+    $overallValue = [math]::Round((($doneWorkouts + $offRespected) / $planned.Count) * 100, 1)
+  }
+  if ($plannedWorkouts.Count -gt 0) {
+    $workoutValue = [math]::Round(($doneWorkouts / $plannedWorkouts.Count) * 100, 1)
+  }
+
+  return [PSCustomObject]@{
+    planned_total     = $planned.Count
+    planned_workouts  = $plannedWorkouts.Count
+    planned_off       = $plannedOff.Count
+    done_workouts     = $doneWorkouts
+    missed_workouts   = $missedWorkouts
+    off_respected     = $offRespected
+    off_broken        = $offBroken
+    off_broken_dates  = $offBrokenDates
+    extras            = $extras
+    adherence_overall = $overallValue
+    adherence_workouts = $workoutValue
+  }
 }
 
 function Format-Duration-Short {
@@ -815,17 +905,18 @@ function Build-ReportHtmlModern {
     $text += "$($Activity.name)"
     $text = $text.ToLower()
 
-    if ($text -match "recuper|solto|leve") {
-      return "Recuperacao ativa para reduzir fadiga e manter circulacao."
-    }
-    if ($text -match "sweet spot|ss|tempo") {
+    if ($text -match "sweet spot|ss|tempo|threshold|limiar") {
       return "Sweet Spot para elevar limiar e sustentar potencia com controle."
-    }
-    if ($text -match "endurance|z2|base") {
-      return "Base aerobica para eficiencia metabolica e resistencia."
     }
     if ($text -match "tiro|interval|vo2") {
       return "Intervalos para estimular VO2 e velocidade."
+    }
+    if ($text -match "endurance|z2|base|longao|longão|longo") {
+      return "Base aerobica para eficiencia metabolica e resistencia."
+    }
+    # "Leve" costuma aparecer em Z2 (base) e em recuperacao. Se chegou ate aqui, nao caiu em Z2/base.
+    if ($text -match "recuper|recovery|regener|solto|leve") {
+      return "Recuperacao ativa para reduzir fadiga e manter circulacao."
     }
     if ($text -match "tecnica") {
       if ($Activity.type -eq "Swim") { return "Tecnica de nado para eficiencia e economia." }
@@ -975,15 +1066,26 @@ function Build-ReportHtmlModern {
   if ($report.PSObject.Properties.Name -contains "treinos_planejados") {
     $plannedEvents = @($report.treinos_planejados)
   }
-  $plannedCount = $plannedEvents.Count
-  $matchedCount = ($activities | Where-Object { $_.planejado }).Count
-  $complianceValue = if ($plannedCount -gt 0) { [math]::Round((($matchedCount / $plannedCount) * 100), 1) } else { $null }
+
+  $adherence = Get-PlanAdherenceSummary -PlannedEvents $plannedEvents -Activities $activities
+  $plannedCount = $adherence.planned_total
+  $plannedWorkoutCount = $adherence.planned_workouts
+  $plannedOffCount = $adherence.planned_off
+  $doneWorkoutCount = $adherence.done_workouts
+  $offRespectedCount = $adherence.off_respected
+  $extraCount = @($adherence.extras).Count
+  $missedWorkouts = @($adherence.missed_workouts)
+
+  $complianceValue = $adherence.adherence_overall
+  $workoutComplianceValue = $adherence.adherence_workouts
   $complianceText = if ($complianceValue -ne $null) { Format-Percent -Value $complianceValue } else { "n/a" }
+  $workoutComplianceText = if ($workoutComplianceValue -ne $null) { Format-Percent -Value $workoutComplianceValue } else { "n/a" }
+  $adherenceForLabel = if ($workoutComplianceValue -ne $null) { $workoutComplianceValue } else { $complianceValue }
   $complianceLabel = "Sem dados"
   $complianceClass = "comp-neutral"
-  if ($complianceValue -ne $null) {
-    if ($complianceValue -ge 85) { $complianceLabel = "Excelente"; $complianceClass = "comp-good" }
-    elseif ($complianceValue -ge 70) { $complianceLabel = "Bom"; $complianceClass = "comp-mid" }
+  if ($adherenceForLabel -ne $null) {
+    if ($adherenceForLabel -ge 85) { $complianceLabel = "Excelente"; $complianceClass = "comp-good" }
+    elseif ($adherenceForLabel -ge 70) { $complianceLabel = "Bom"; $complianceClass = "comp-mid" }
     else { $complianceLabel = "Baixo"; $complianceClass = "comp-low" }
   }
 
@@ -994,7 +1096,10 @@ function Build-ReportHtmlModern {
   $executedTimeText = if ($totalTime -ne $null) { "{0:0.1}h" -f $totalTime } else { "n/a" }
   $executedDistText = if ($totalDist -ne $null) { "{0:0.1}km" -f $totalDist } else { "n/a" }
   $complianceDetail = if ($plannedCount -gt 0) {
-    "Planejado: $plannedCount sess | $plannedTimeText | $plannedDistText. Executado: $activityCount sess | $executedTimeText | $executedDistText."
+    $workoutPart = if ($plannedWorkoutCount -gt 0) { "Treinos: $doneWorkoutCount/$plannedWorkoutCount ($workoutComplianceText)" } else { "Treinos: n/a" }
+    $offPart = if ($plannedOffCount -gt 0) { "Descanso: $offRespectedCount/$plannedOffCount" } else { "Descanso: n/a" }
+    $extraPart = "Extras: $extraCount"
+    "$workoutPart · $offPart · $extraPart. Planejado: $plannedCount sess | $plannedTimeText | $plannedDistText. Executado: $activityCount sess | $executedTimeText | $executedDistText."
   } else {
     "Sem planejamento importado nesta semana."
   }
@@ -1150,9 +1255,9 @@ function Build-ReportHtmlModern {
   </div>
   <div class="stat-card">
     <div class="stat-value">$complianceText</div>
-    <div class="stat-label">Compliance</div>
+    <div class="stat-label">Aderência ao plano</div>
     <div class="stat-pill $complianceClass">$complianceLabel</div>
-    <div class="stat-note">Quanto do plano foi executado. Meta: &gt;85%. $complianceDetail</div>
+    <div class="stat-note">Quanto do plano foi cumprido (treinos + descanso). $complianceDetail</div>
   </div>
 </div>
 "@
@@ -1209,41 +1314,82 @@ function Build-ReportHtmlModern {
   }
 
   $totalTimeText = if ($totalTime -ne $null) { "{0:0.0}h" -f $totalTime } else { "n/a" }
-  $tsbStateText = "equilibrio"
-  $tsbAdvice = "Mantenha a carga controlada."
-  if ($tsb -le -25) { $tsbStateText = "sobrecarga significativa"; $tsbAdvice = "Considere uma semana de recuperacao." }
-  elseif ($tsb -le -10) { $tsbStateText = "sobrecarga moderada"; $tsbAdvice = "Segurar intensidade e priorizar sono." }
-  elseif ($tsb -le 0) { $tsbStateText = "leve sobrecarga"; $tsbAdvice = "Monitorar sinais de fadiga." }
-  elseif ($tsb -gt 0) { $tsbStateText = "recuperado"; $tsbAdvice = "Boa janela para manter qualidade." }
+  $tsbStateText = "controlada"
+  $tsbAdvice = "Boa semana para manter a consistência."
+  if ($tsb -le -25) { $tsbStateText = "pesada"; $tsbAdvice = "Vamos priorizar recuperação (sono e um pouco menos intensidade)." }
+  elseif ($tsb -le -10) { $tsbStateText = "moderada"; $tsbAdvice = "Segurar a intensidade e priorizar sono." }
+  elseif ($tsb -le 0) { $tsbStateText = "leve"; $tsbAdvice = "Só monitorar sinais de fadiga e manter o plano." }
+  elseif ($tsb -gt 0) { $tsbStateText = "boa"; $tsbAdvice = "Boa janela para colocar qualidade com calma." }
 
-  $ctlBand = "moderado"
-  if ($ctl -lt 40) { $ctlBand = "baixo" }
-  elseif ($ctl -ge 60) { $ctlBand = "alto" }
+  $adherenceLine = ""
+  if ($plannedCount -gt 0) {
+    $parts = @()
+    if ($plannedWorkoutCount -gt 0) { $parts += "Treinos: $doneWorkoutCount/$plannedWorkoutCount ($workoutComplianceText)" }
+    if ($plannedOffCount -gt 0) { $parts += "Descanso: $offRespectedCount/$plannedOffCount" }
+    $parts += "Extras: $extraCount"
+    $adherenceLine = "Aderência ao plano: $complianceText. " + ($parts -join " · ") + "."
+  } else {
+    $adherenceLine = "Aderência ao plano: n/a (sem planejamento importado nesta semana)."
+  }
 
-  $summaryText = "Voce completou $activityCount atividades totalizando $totalTimeText e $totalTss TSS. Voce esta em $tsbStateText (TSB $tsbText). $tsbAdvice"
-  $fitnessText = "Seu CTL de $ctlText esta na faixa de fitness $ctlBand. Continue a progressao - meta de CTL 70+ para o 70.3."
-  $complianceSentence = if ($complianceValue -ne $null) { "Compliance de $complianceText - $complianceLabel." } else { "Compliance indisponivel nesta semana." }
+  $sleepLine = ""
+  if ($avgSleep -gt 0 -and $idealSleep -gt 0 -and $avgSleep -lt ($idealSleep - 0.5)) {
+    $sleepLine = "Seu sono médio foi $avgSleep h (ideal ~${idealSleep}h). Se der, tente ganhar +30-45 min em 2 noites."
+  }
 
-  $modalityLines = @()
-  if ($swimPct -lt 20 -and $swimPct -gt 0) { $modalityLines += "<li>Natacao abaixo do ideal ($swimPct%). Para triathlon, busque 20-25% do volume.</li>" }
-  elseif ($swimPct -gt 0) { $modalityLines += "<li>Natacao em linha com o alvo ($swimPct%).</li>" }
+  $summaryText = "Boa semana de consistência: $activityCount sessões, $totalTimeText de treino e $totalTss TSS. A fadiga ficou $tsbStateText (TSB $tsbText). $tsbAdvice"
 
-  if ($bikePct -ge $runPct -and $bikePct -ge $swimPct) { $modalityLines += "<li>Bike como principal modalidade ($bikePct%) - coerente com fase e protecao do joelho.</li>" }
-  if ($runPct -gt 0) { $modalityLines += "<li>Volume de corrida controlado ($runPct%) - bom para protecao do joelho.</li>" }
-  if ($strengthPct -gt 0) { $modalityLines += "<li>Forca presente ($strengthPct%) - manter 2x/semana.</li>" }
-  if ($modalityLines.Count -eq 0) { $modalityLines += "<li>Sem dados de modalidade suficientes.</li>" }
+  $wins = @()
+  if ($plannedWorkoutCount -gt 0) {
+    $wins += "Você concluiu $doneWorkoutCount de $plannedWorkoutCount treinos planejados."
+  }
+  if ($plannedOffCount -gt 0 -and $offRespectedCount -gt 0) {
+    $wins += "Descanso planejado respeitado ($offRespectedCount/$plannedOffCount)."
+  }
+  $longRun = $activities | Where-Object type -eq "Run" | Sort-Object moving_time_min -Descending | Select-Object -First 1
+  if ($longRun -and $longRun.moving_time_min -ge 60) {
+    $mins = [math]::Round($longRun.moving_time_min, 0)
+    $dist = if ($longRun.distance_km -ne $null) { [math]::Round($longRun.distance_km, 1) } else { $null }
+    $distText = if ($dist -ne $null) { " · $dist km" } else { "" }
+    $wins += "Longão feito: $(Fix-TextEncoding $longRun.name) ($mins min$distText)."
+  }
+  $qualityRun = $activities | Where-Object { $_.type -eq "Run" -and (Fix-TextEncoding $_.name) -match "(?i)interval|tiro|tempo|limiar|threshold" } | Sort-Object moving_time_min -Descending | Select-Object -First 1
+  if ($qualityRun) {
+    $wins += "Sessão de qualidade na corrida concluída: $(Fix-TextEncoding $qualityRun.name)."
+  }
+  $strengthSessions = @($activities | Where-Object { $_.type -eq "Strength" -or $_.type -eq "WeightTraining" })
+  if ($strengthSessions.Count -gt 0) {
+    $wins += "Força presente ($($strengthSessions.Count)x) para sustentar bike/corrida e proteger o joelho."
+  }
+  if ($extraCount -gt 0) {
+    $wins += "Você ainda fez $extraCount sessão(ões) extra. Boa energia, só vamos encaixar sem atrapalhar recuperação."
+  }
+  if ($sleepLine) { $wins += $sleepLine }
 
-  $focusLines = @(
-    "Consistencia sobre intensidade - 3x natacao, 3x bike, 2x corrida, 2x forca",
-    "Qualidade tecnica - cada sessao e oportunidade de melhorar eficiencia",
-    "Recuperacao - sono, nutricao e estresse impactam adaptacao"
-  )
-  if ($tsb -le -20) {
-    $focusLines = @(
-      "Recuperacao - reduzir carga e priorizar sono",
-      "Consistencia sobre intensidade - manter volume controlado",
-      "Qualidade tecnica - foco em execucao limpa"
-    )
+  $pending = @()
+  foreach ($p in $missedWorkouts) {
+    $pending += "$($p.start_date): $(Fix-TextEncoding $p.name)"
+  }
+  if ($plannedOffCount -gt 0 -and $offRespectedCount -lt $plannedOffCount) {
+    $pending += "Descanso não respeitado em: $(@($adherence.off_broken_dates) -join ', ')"
+  }
+  if ($pending.Count -eq 0) {
+    $pending += "Nada importante ficou pendente do plano nesta semana."
+  }
+
+  $focusLines = @()
+  if ((@($missedWorkouts | Where-Object { $_.type -eq "Swim" })).Count -gt 0) {
+    $focusLines += "Priorizar natação: pelo menos 1 sessão técnica na semana (mesmo curta)."
+  }
+  if ((@($missedWorkouts | Where-Object { $_.type -eq "Ride" })).Count -gt 0) {
+    $focusLines += "Garantir 1 bike endurance (Z2) para sustentar o triathlon sprint."
+  }
+  if ($extraCount -gt 0) {
+    $focusLines += "Quando bater vontade de fazer extra, tente substituir (não somar) ou me avise para ajustar a semana."
+  }
+  $focusLines += "Manter os 2 pilares da corrida: 1 sessão de qualidade + 1 longão (Z2), com progressão segura."
+  if ($avgSleep -gt 0 -and $idealSleep -gt 0 -and $avgSleep -lt ($idealSleep - 0.5)) {
+    $focusLines += "Sono: proteger recuperação (qualquer +30 min por noite já ajuda)."
   }
 
   $nextRaceLine = if ($nextRaceAName -and $nextRaceADays -ne $null) {
@@ -1251,12 +1397,13 @@ function Build-ReportHtmlModern {
   } elseif ($nextRaceName -and $nextRaceDays -ne $null) {
     "Faltam $nextRaceDays dias para $nextRaceName."
   } else {
-    "Proximas provas monitoradas no calendario."
+    "Próximas provas monitoradas no calendário."
   }
-  $otherRacesLine = if ($otherRaces.Count -gt 0) { "Outras provas exigem atencao: " + ($otherRaces -join ", ") + "." } else { "" }
+  $otherRacesLine = if ($otherRaces.Count -gt 0) { "Outras provas no radar: " + ($otherRaces -join ", ") + "." } else { "" }
 
-  $modalityHtml = $modalityLines -join ""
-  $focusHtml = ($focusLines | ForEach-Object { "<li>$_</li>" }) -join ""
+  $winsHtml = ($wins | ForEach-Object { "<li>$(Html-Escape $_)</li>" }) -join ""
+  $pendingHtml = ($pending | ForEach-Object { "<li>$(Html-Escape $_)</li>" }) -join ""
+  $focusHtml = ($focusLines | ForEach-Object { "<li>$(Html-Escape $_)</li>" }) -join ""
 
   $feedbackBlock = @"
 <section class="card section coach-card">
@@ -1264,24 +1411,25 @@ function Build-ReportHtmlModern {
     <div class="coach-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11a8 8 0 0 1-8 8H7l-4 3 1-5a8 8 0 1 1 17-6z"/></svg></div>
     <div>
       <h2>Feedback do Coach</h2>
-      <div class="coach-subtitle">Resumo objetivo da semana</div>
+      <div class="coach-subtitle">O que foi bem, o que ajustar e o foco da próxima semana</div>
     </div>
   </div>
   <div class="coach-block">
-    <div class="coach-title">Resumo da Semana</div>
-    <p>$summaryText</p>
+    <div class="coach-title">Resumo rápido</div>
+    <p>$(Html-Escape $summaryText)</p>
+    <p class="muted" style="margin:8px 0 0 0">$(Html-Escape $adherenceLine)</p>
   </div>
   <div class="coach-block">
-    <div class="coach-title">Progressao de Fitness</div>
-    <p>$fitnessText $complianceSentence</p>
+    <div class="coach-title">O que você fez bem</div>
+    <ul>$winsHtml</ul>
   </div>
   <div class="coach-block">
-    <div class="coach-title">Analise por Modalidade</div>
-    <ul>$modalityHtml</ul>
+    <div class="coach-title">O que ficou pendente</div>
+    <ul>$pendingHtml</ul>
   </div>
   <div class="coach-block">
-    <div class="coach-title">Foco para Proxima Semana</div>
-    <p>$nextRaceLine $otherRacesLine</p>
+    <div class="coach-title">Foco para a próxima semana</div>
+    <p>$(Html-Escape $nextRaceLine) $(Html-Escape $otherRacesLine)</p>
     <ol>$focusHtml</ol>
   </div>
 </section>
@@ -2396,9 +2544,9 @@ foreach ($report in $reportFiles) {
   $tsbText = if ($tsb -ne $null) { [math]::Round($tsb,1) } else { "n/a" }
 
   $plannedEvents = if ($latestData -and $latestData.PSObject.Properties.Name -contains "treinos_planejados") { @($latestData.treinos_planejados) } else { @() }
-  $plannedCount = $plannedEvents.Count
-  $matchedCount = if ($latestData) { (@($latestData.atividades) | Where-Object { $_.planejado }).Count } else { 0 }
-  $complianceValue = if ($plannedCount -gt 0) { [math]::Round((($matchedCount / $plannedCount) * 100), 1) } else { $null }
+  $latestActivities = if ($latestData) { @($latestData.atividades) } else { @() }
+  $adherence = Get-PlanAdherenceSummary -PlannedEvents $plannedEvents -Activities $latestActivities
+  $complianceValue = $adherence.adherence_overall
   $complianceText = if ($complianceValue -ne $null) { "{0:0.0}%" -f $complianceValue } else { "n/a" }
 
   $reportsList = @()
@@ -2997,7 +3145,7 @@ foreach ($report in $reportFiles) {
       <div class="card">
         <strong>Métricas (última semana)</strong>
         <div class="muted" style="margin-top:8px">CTL $ctlText · ATL $atlText · TSB $tsbText</div>
-        <div class="muted">Compliance: $complianceText</div>
+        <div class="muted">Aderência ao plano: $complianceText</div>
       </div>
     </section>
 

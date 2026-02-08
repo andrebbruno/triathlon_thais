@@ -102,7 +102,18 @@
 
 ## 7. LOG DE DECISOES DE COACHING
 
-(a preencher)
+### 2026-02-08 - Qualidade do relatorio semanal (A + B)
+- Publico-alvo: Thais (tom amigavel, reforcar acertos + apontar ajustes).
+- Aderencia ao plano (definicao usada no site/analise):
+  - Aderencia (geral) = (treinos feitos + descansos OFF respeitados) / total planejado.
+  - Aderencia (treinos) = treinos feitos / treinos planejados.
+  - Extras = sessoes executadas sem match com o planejamento.
+- Match planejado vs executado: 1:1 usando `paired_activity_id` e/ou `event_id` do Intervals (evita dupla contagem e falsos positivos).
+- OFF/descanso: se OFF planejado e nao houver atividade no dia => respeitado; se houver atividade => descanso quebrado.
+- Robustez de texto: aplicar correcao de encoding (mojibake) para nomes/descricoes/notas vindos do Intervals.
+- Feedback do coach no relatorio (mais amigavel): Resumo rapido; O que voce fez bem; O que ficou pendente; Foco para a proxima semana (2-4 acoes praticas).
+- Remover metas genericas desalinhadas do calendario (ex: CTL/70.3 quando a prova principal e Sprint).
+- Nao reprocessar relatorios antigos automaticamente: melhorias valem para relatorios futuros (ou quando a semana for regenerada pelo workflow).
 
 ---
 

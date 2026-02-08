@@ -1,66 +1,66 @@
-[
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-09T00:00:00",
-    "type": "Run",
-    "name": "Run - Z2 Leve",
-    "description": "Base Z2\n- 45m in 06:20-06:10/km Pace\n-  in  Pace"
-  },
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-09T00:00:00",
-    "type": "WeightTraining",
-    "name": "Strength - Estabilidade",
-    "description": "Estabilidade e core\n- 35-40m leve/moderado (sem falha)\n- foco: core, gluteos, cadeia posterior\n-  in"
-  },
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-10T00:00:00",
-    "type": "Ride",
-    "name": "Bike - Endurance Z2",
-    "description": "Endurance Z2\n- 55m in 65-80W power=3s 90-100rpm\n-  in"
-  },
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-11T00:00:00",
-    "type": "Run",
-    "name": "Run - Intervalado 10km",
-    "description": "Warmup\n- 12m in Z2 Pace\n\nRepeat 5x\n- 5min Z3 Pace\n- 2min Z1 Pace \n\nCooldown\n- Leve 10m 07:00 Pace \n"
-  },
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-12T00:00:00",
-    "type": "Ride",
-    "name": "Bike - Endurance Longo",
-    "description": "Endurance Z2 Long\n- 85m in 62-78W power=3s 85-95rpm\n-  in"
-  },
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-13T00:00:00",
-    "type": "Swim",
-    "name": "Swim - Tecnica",
-    "description": "Solto\n- 300meters Z1 Pace\n-  in  Pace\n\nTecnica (educativos)\n6x\n- 50meters Z1 Pace\n- 15-20s rest\n-  in  Pace\n\nSolto\n- 200meters Z1 Pace\n-  in  Pace"
-  },
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-14T00:00:00",
-    "type": "Run",
-    "name": "Run - Longao Z2",
-    "description": "Longao Z2\n- 75m in 06:15-06:05/km Pace\n(obs: blindar o resto do dia)\n-  in  Pace"
-  },
-  {
-    "external_id": "",
-    "category": "WORKOUT",
-    "start_date_local": "2026-02-15T00:00:00",
-    "type": "Swim",
-    "name": "OFF",
-    "description": "Descanso total\n-  in"
-  }
+﻿[
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-09T00:00:00",
+        "type":  "Run",
+        "name":  "Run - Z2 Leve",
+        "description":  "Base Z2\n- 45m in 06:20-06:10/km Pace\n-  in  Pace"
+    },
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-09T00:00:00",
+        "type":  "WeightTraining",
+        "name":  "Strength - Estabilidade",
+        "description":  "Estabilidade e core\n- 35-40m leve/moderado (sem falha)\n- foco: core, gluteos, cadeia posterior\n-  in"
+    },
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-10T00:00:00",
+        "type":  "Ride",
+        "name":  "Bike - Endurance Z2",
+        "description":  "Endurance Z2\n- 55m in 65-80W power=3s 90-100rpm\n-  in"
+    },
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-11T00:00:00",
+        "type":  "Run",
+        "name":  "Run - Intervalado 10km",
+        "description":  "Warmup\n- 12m in Z2 Pace\n\nRepeat 5x\n- 5min Z3 Pace\n- 2min Z1 Pace \n\nCooldown\n- Leve 10m 07:00 Pace \n"
+    },
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-12T00:00:00",
+        "type":  "Ride",
+        "name":  "Bike - Endurance Longo",
+        "description":  "Endurance Z2 Long\n- 85m in 62-78W power=3s 85-95rpm\n-  in"
+    },
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-13T00:00:00",
+        "type":  "Swim",
+        "name":  "Swim - Tecnica",
+        "description":  "Solto\n- 300meters Z1 Pace\n-  in  Pace\n\nTecnica (educativos)\n6x\n- 50meters Z1 Pace\n- 15-20s rest\n-  in  Pace\n\nSolto\n- 200meters Z1 Pace\n-  in  Pace"
+    },
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-14T00:00:00",
+        "type":  "Run",
+        "name":  "Run - Longao Z2",
+        "description":  "Longao Z2\n- 75m in 06:15-06:05/km Pace\n(obs: blindar o resto do dia)\n-  in  Pace"
+    },
+    {
+        "external_id":  "",
+        "category":  "WORKOUT",
+        "start_date_local":  "2026-02-15T00:00:00",
+        "type":  "Swim",
+        "name":  "OFF",
+        "description":  "Descanso total\n-  in"
+    }
 ]

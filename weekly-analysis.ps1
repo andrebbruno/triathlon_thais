@@ -48,10 +48,14 @@ function Normalize-Text {
 function Fix-TextEncoding {
   param([string]$Text)
   if (-not $Text) { return "" }
-  if ($Text -match "Ã|Â|â") {
+  # Keep this script ASCII-only (no BOM) for Windows PowerShell 5.1 compatibility.
+  # Heuristic: typical mojibake includes U+00C3 / U+00C2 characters.
+  $ch1 = [char]0x00C3
+  $ch2 = [char]0x00C2
+  if ($Text.IndexOf($ch1) -ge 0 -or $Text.IndexOf($ch2) -ge 0) {
     try {
       $fixed = [Text.Encoding]::UTF8.GetString([Text.Encoding]::GetEncoding("Windows-1252").GetBytes($Text))
-      if ($fixed -match "Ã|Â|â") {
+      if ($fixed.IndexOf($ch1) -ge 0 -or $fixed.IndexOf($ch2) -ge 0) {
         $fixed = [Text.Encoding]::UTF8.GetString([Text.Encoding]::GetEncoding("ISO-8859-1").GetBytes($Text))
       }
       return $fixed
@@ -85,7 +89,8 @@ function Clean-DisplayText {
 
 function Display-Name {
   param([string]$Text)
-  return (Clean-DisplayText -Text $Text)
+  $fixed = Fix-TextEncoding -Text $Text
+  return (($fixed -replace "\s+", " ").Trim())
 }
 
 function Score-Match {
@@ -113,6 +118,25 @@ function Map-Type {
   if (-not $Type) { return "" }
   if ($Type -eq "Workout") { return "WeightTraining" }
   return $Type
+}
+
+function Is-OffPlannedEvent {
+  param([object]$Event)
+
+  if (-not $Event) { return $false }
+  $name = Fix-TextEncoding -Text ([string]$Event.name)
+  if ($name -and $name.Trim().ToUpperInvariant() -eq "OFF") { return $true }
+
+  $desc = Fix-TextEncoding -Text ([string]$Event.description)
+  if ($desc -and $desc -match "(?i)descanso") { return $true }
+
+  return $false
+}
+
+function Format-Percent {
+  param([double]$Value)
+  if ($Value -eq $null) { return "n/a" }
+  return "{0:0.0}%" -f $Value
 }
 
 function Shift-ExternalId {
@@ -146,29 +170,56 @@ $planned = @($report.treinos_planejados)
 $weekStart = $report.semana.inicio
 $weekEnd = $report.semana.fim
 
-# Planejado vs executado
-$matches = @()
-foreach ($p in $planned) {
-  $p.name = Clean-DisplayText -Text $p.name
-  $p.description = Fix-TextEncoding -Text $p.description
-  $p.type = Map-Type -Type $p.type
-  $best = $null; $bestScore = -1
-  foreach ($a in $activities) {
-    $score = Score-Match -Planned $p -Activity $a
-    if ($score -gt $bestScore) { $bestScore = $score; $best = $a }
-  }
-  $matched = $bestScore -ge 3
-  $matches += [PSCustomObject]@{
-    planned = $p
-    activity = if ($matched) { $best } else { $null }
-    score = $bestScore
-    matched = $matched
+# Planejado vs executado (1:1, evitando falso-positivo)
+$plannedOff = @($planned | Where-Object { Is-OffPlannedEvent -Event $_ })
+$plannedWorkouts = @($planned | Where-Object { -not (Is-OffPlannedEvent -Event $_) })
+
+$activityIds = New-Object System.Collections.Generic.HashSet[string]
+foreach ($a in $activities) {
+  if ($a.id) { [void]$activityIds.Add([string]$a.id) }
+}
+
+$matchedEventIds = New-Object System.Collections.Generic.HashSet[string]
+foreach ($a in $activities) {
+  if ($a.planejado -and $a.planejado.event_id) {
+    [void]$matchedEventIds.Add([string]$a.planejado.event_id)
   }
 }
 
+$doneWorkouts = @()
+$missedWorkouts = @()
+foreach ($p in $plannedWorkouts) {
+  $p.type = Map-Type -Type $p.type
+  $eventId = [string]$p.event_id
+  $pairedId = [string]$p.paired_activity_id
+  $matched = $false
+  if ($pairedId -and $activityIds.Contains($pairedId)) { $matched = $true }
+  elseif ($eventId -and $matchedEventIds.Contains($eventId)) { $matched = $true }
+
+  if ($matched) { $doneWorkouts += $p } else { $missedWorkouts += $p }
+}
+
+$offRespected = 0
+$offBroken = 0
+foreach ($p in $plannedOff) {
+  $d = [string]$p.start_date
+  $hasActivity = $false
+  if ($d) {
+    $hasActivity = (@($activities | Where-Object { $_.start_date_local -eq $d } | Select-Object -First 1) -ne $null)
+  }
+  if (-not $hasActivity) { $offRespected += 1 } else { $offBroken += 1 }
+}
+
+$extraActivities = @($activities | Where-Object { $_.planejado -eq $null })
+$extraCount = $extraActivities.Count
+
 $plannedCount = $planned.Count
-$matchedCount = ($matches | Where-Object { $_.matched }).Count
-$compliance = if ($plannedCount -gt 0) { [math]::Round(($matchedCount / $plannedCount) * 100, 1) } else { $null }
+$plannedWorkoutCount = $plannedWorkouts.Count
+$plannedOffCount = $plannedOff.Count
+$doneWorkoutCount = $doneWorkouts.Count
+
+$workoutCompliance = if ($plannedWorkoutCount -gt 0) { [math]::Round(($doneWorkoutCount / $plannedWorkoutCount) * 100, 1) } else { $null }
+$overallAdherence = if ($plannedCount -gt 0) { [math]::Round((($doneWorkoutCount + $offRespected) / $plannedCount) * 100, 1) } else { $null }
 
 # Bem-estar
 $wellness = @($report.bem_estar)
@@ -181,7 +232,7 @@ $tsb = $report.metricas.TSB
 $status = "HOLD"
 if ($tsb -le -20 -or ($avgSleep -ne $null -and $avgSleep -lt ($idealSleep - 1)) -or ($avgHrv -ne $null -and $avgHrv -lt ($baselineHrv - 5)) -or ($avgRhr -ne $null -and $avgRhr -gt ($baselineRhr + 5))) {
   $status = "STEP BACK"
-} elseif ($compliance -ne $null -and $compliance -ge 85 -and $tsb -ge -10 -and $tsb -le 10) {
+} elseif ($workoutCompliance -ne $null -and $workoutCompliance -ge 85 -and $tsb -ge -10 -and $tsb -le 10) {
   $status = "PUSH"
 }
 
@@ -192,7 +243,8 @@ $lines += "# Analise Semanal ($weekStart a $weekEnd)"
 $lines += ""
 $lines += "## Status da Semana"
 $lines += "- Classificacao: **$status**"
-$lines += "- Compliance: " + ($(if ($compliance -ne $null) { "$compliance%" } else { "n/a" }))
+$lines += "- Aderencia ao plano (geral): " + ($(if ($overallAdherence -ne $null) { (Format-Percent -Value $overallAdherence) } else { "n/a" })) + " | Treinos $doneWorkoutCount/$plannedWorkoutCount | Descanso $offRespected/$plannedOffCount | Extras $extraCount"
+$lines += "- Aderencia (treinos): " + ($(if ($workoutCompliance -ne $null) { (Format-Percent -Value $workoutCompliance) } else { "n/a" }))
 $lines += "- CTL/ATL/TSB: $($report.metricas.CTL) / $($report.metricas.ATL) / $($report.metricas.TSB)"
 $lines += ""
 $lines += "## Bem-estar (media)"
@@ -200,22 +252,19 @@ $lines += "- Sono: " + ($(if ($avgSleep -ne $null) { "$avgSleep h" } else { "n/a
 $lines += "- HRV: " + ($(if ($avgHrv -ne $null) { "$avgHrv" } else { "n/a" }))
 $lines += "- FC repouso: " + ($(if ($avgRhr -ne $null) { "$avgRhr bpm" } else { "n/a" }))
 $lines += ""
-$lines += "## Planejado vs Executado"
-foreach ($m in $matches) {
-  $p = $m.planned
-  $a = $m.activity
-  if ($m.matched -and $a) {
-    $pName = Display-Name -Text $p.name
-    $aName = Display-Name -Text $a.name
-    $pTime = if ($p.moving_time_min) { "$($p.moving_time_min)min" } else { "n/a" }
-    $aTime = if ($a.moving_time_min) { "$([math]::Round($a.moving_time_min,1))min" } else { "n/a" }
-    $pDist = if ($p.distance_km) { "$($p.distance_km)km" } else { "n/a" }
-    $aDist = if ($a.distance_km) { "$([math]::Round($a.distance_km,1))km" } else { "n/a" }
-    $lines += "- **$($p.start_date) - $pName** -> Executado: $aName | Tempo $pTime vs $aTime | Dist $pDist vs $aDist"
-  } else {
-    $pName = Display-Name -Text $p.name
-    $lines += "- **$($p.start_date) - $pName** -> **Nao executado**"
-  }
+$missedSummary = if ($missedWorkouts.Count -gt 0) {
+  ($missedWorkouts | ForEach-Object { "{0} ({1})" -f (Display-Name -Text $_.name), $_.start_date }) -join "; "
+} else { "nenhum" }
+$lines += "## Pendencias do plano"
+$lines += "- Nao feitos: $missedSummary"
+$extraSummary = if ($extraActivities.Count -gt 0) {
+  ($extraActivities | Select-Object -First 4 | ForEach-Object { Display-Name -Text $_.name }) -join ", "
+} else { "" }
+if ($extraCount -gt 0) {
+  $suffix = if ($extraActivities.Count -gt 4) { ", ..." } else { "" }
+  $lines += "- Extras (fora do plano): $extraCount ($extraSummary$suffix)"
+} else {
+  $lines += "- Extras (fora do plano): 0"
 }
 
 ($lines -join "`n") | Out-File -FilePath $analysisPath -Encoding utf8
@@ -242,8 +291,9 @@ foreach ($p in $planned) {
 
 $trainingsPath = Join-Path $OutputDir ("trainings_{0}_{1}.json" -f $nextStart.ToString("yyyy-MM-dd"), $nextEnd.ToString("yyyy-MM-dd"))
 $trainings | ConvertTo-Json -Depth 6 | Out-File -FilePath $trainingsPath -Encoding utf8
-$trainings | ConvertTo-Json -Depth 6 | Out-File -FilePath (Join-Path $repoRoot $TrainingsOut) -Encoding utf8
+$trainingsRootPath = if ([System.IO.Path]::IsPathRooted($TrainingsOut)) { $TrainingsOut } else { (Join-Path $repoRoot $TrainingsOut) }
+$trainings | ConvertTo-Json -Depth 6 | Out-File -FilePath $trainingsRootPath -Encoding utf8
 
 Write-Host "Analise salva em: $analysisPath"
 Write-Host "Trainings gerado em: $trainingsPath"
-Write-Host "Trainings (root) atualizado: $(Join-Path $repoRoot $TrainingsOut)"
+Write-Host "Trainings (root) atualizado: $trainingsRootPath"

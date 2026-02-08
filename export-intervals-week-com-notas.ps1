@@ -48,6 +48,25 @@ function Get-FirstValue {
     return $null
 }
 
+function Fix-TextEncoding {
+    param([string]$Text)
+    if (-not $Text) { return "" }
+    # Keep this script ASCII-only (no BOM) for Windows PowerShell 5.1 compatibility.
+    # Heuristic: typical mojibake includes U+00C3 / U+00C2 characters.
+    $ch1 = [char]0x00C3
+    $ch2 = [char]0x00C2
+    if ($Text.IndexOf($ch1) -ge 0 -or $Text.IndexOf($ch2) -ge 0) {
+        try {
+            $fixed = [Text.Encoding]::UTF8.GetString([Text.Encoding]::GetEncoding("Windows-1252").GetBytes($Text))
+            if ($fixed.IndexOf($ch1) -ge 0 -or $fixed.IndexOf($ch2) -ge 0) {
+                $fixed = [Text.Encoding]::UTF8.GetString([Text.Encoding]::GetEncoding("ISO-8859-1").GetBytes($Text))
+            }
+            return $fixed
+        } catch { return $Text }
+    }
+    return $Text
+}
+
 if (-not $StartDate -or -not $EndDate) {
     $range = Get-WeekRange
     $StartDate = $range.Start
@@ -93,7 +112,7 @@ function Get-ChatMessages {
 
     $filtered = $messages | Where-Object {
         $_.type -eq "TEXT" -and $_.content -and ($null -eq $OwnerId -or $_.athlete_id -eq $OwnerId)
-    } | Sort-Object created | ForEach-Object { $_.content.Trim() }
+    } | Sort-Object created | ForEach-Object { (Fix-TextEncoding -Text $_.content).Trim() }
 
     $Cache[$ChatId] = @($filtered)
     return $Cache[$ChatId]
@@ -144,8 +163,8 @@ foreach ($e in ($events | Where-Object { $_.category -eq "WORKOUT" })) {
         end_date_local    = $e.end_date_local
         start_date        = $eventDate
         type              = $e.type
-        name              = $e.name
-        description       = $e.description
+        name              = Fix-TextEncoding -Text $e.name
+        description       = Fix-TextEncoding -Text $e.description
         moving_time_min   = if ($durationSec -ne $null) { [math]::Round($durationSec / 60, 1) } else { $null }
         distance_km       = if ($distanceMeters -ne $null) { [math]::Round($distanceMeters / 1000, 1) } else { $null }
         paired_activity_id = $e.paired_activity_id
@@ -179,7 +198,7 @@ foreach ($a in $activities) {
     $strainScore = Get-FirstValue @($a.strain_score)
 
     $noteParts = @()
-    if ($a.description) { $noteParts += $a.description.Trim() }
+    if ($a.description) { $noteParts += (Fix-TextEncoding -Text $a.description).Trim() }
     $chatNotes = Get-ChatMessages -ChatId $a.icu_chat_id -Headers $headers -Cache $chatCache -OwnerId $ownerId
     if ($chatNotes.Count -gt 0) { $noteParts += $chatNotes }
     $notes = ($noteParts | Where-Object { $_ -and $_.Trim() -ne "" }) -join " | "
@@ -214,12 +233,12 @@ foreach ($a in $activities) {
         $planSummary = [PSCustomObject]@{
             event_id          = $planMatch.event_id
             external_id       = $planMatch.external_id
-            name              = $planMatch.name
+            name              = Fix-TextEncoding -Text $planMatch.name
             type              = $planMatch.type
             start_date_local  = $planMatch.start_date_local
             moving_time_min   = $planMatch.moving_time_min
             distance_km       = $planMatch.distance_km
-            description       = $planMatch.description
+            description       = Fix-TextEncoding -Text $planMatch.description
             match_method      = $matchMethod
             delta_time_min    = if ($planMatch.moving_time_min -ne $null) { [math]::Round(($movingTimeMin - $planMatch.moving_time_min), 1) } else { $null }
             delta_distance_km = if ($planMatch.distance_km -ne $null) { [math]::Round(($distanceKm - $planMatch.distance_km), 1) } else { $null }
@@ -228,7 +247,7 @@ foreach ($a in $activities) {
 
     $activitiesProcessed += [PSCustomObject]@{
         id               = $a.id
-        name             = $a.name
+        name             = Fix-TextEncoding -Text $a.name
         type             = $type
         start_date_local = $dateLocal
         distance_km      = $distanceKm
