@@ -1,28 +1,28 @@
 {
   "relatorio": {
-    "gerado_em": "2026-02-08 17:28:42",
+    "inicio": "2025-11-16",
     "fim": "2026-02-08",
-    "versao": "4.0",
+    "gerado_em": "2026-02-08 20:49:13",
     "athlete_id": "i446982",
-    "periodo_semanas": 12,
     "tipo": "Analise de Longo Prazo - Coach Edition",
-    "inicio": "2025-11-16"
+    "periodo_semanas": 12,
+    "versao": "4.0"
   },
   "resumo_geral": {
-    "distancia_total_km": 575.0,
     "calorias_total": 21032.0,
     "total_semanas_ativas": 10,
     "tss_medio_semanal": 177.0,
     "elevacao_total_m": 2996.0,
-    "tempo_total_horas": 51.4,
     "consistencia_pct": 83.0,
-    "total_atividades": 76
+    "tempo_total_horas": 51.4,
+    "total_atividades": 76,
+    "distancia_total_km": 575.0
   },
   "metricas_atleta": {
-    "FTP_run": 300,
+    "Max_HR": null,
     "FTP_bike": 200,
-    "LTHR": 165,
-    "Max_HR": null
+    "FTP_run": 300,
+    "LTHR": 165
   },
   "analise_semanal": [
     {
@@ -53,32 +53,32 @@
       "swim_pct": 0,
       "strength_pct": 0,
       "bike_analise": {
-        "time_min": null,
-        "distance_km": null,
-        "tss": null,
-        "avg_decoupling": null,
-        "avg_np": null,
-        "avg_power": null,
         "total": 0,
+        "avg_decoupling": null,
+        "distance_km": null,
         "avg_vi": null,
+        "avg_np": null,
+        "time_min": null,
+        "avg_hr": null,
+        "avg_power": null,
         "avg_if": null,
-        "avg_hr": null
+        "tss": null
       },
       "run_analise": {
-        "distance_km": null,
-        "total": 0,
+        "avg_hr": null,
         "avg_cadence": null,
-        "avg_decoupling": null,
         "tss": null,
+        "avg_decoupling": null,
+        "total": 0,
         "time_min": null,
-        "avg_hr": null
+        "distance_km": null
       },
       "swim_analise": {
-        "total": 0,
-        "tss": null,
         "avg_swolf": null,
-        "distance_m": null,
+        "tss": null,
+        "total": 0,
         "time_min": null,
+        "distance_m": null,
         "avg_hr": null
       },
       "bike_zones": null,
@@ -112,32 +112,32 @@
       "swim_pct": 0,
       "strength_pct": 0,
       "bike_analise": {
-        "time_min": null,
-        "distance_km": null,
-        "tss": null,
-        "avg_decoupling": null,
-        "avg_np": null,
-        "avg_power": null,
         "total": 0,
+        "avg_decoupling": null,
+        "distance_km": null,
         "avg_vi": null,
+        "avg_np": null,
+        "time_min": null,
+        "avg_hr": null,
+        "avg_power": null,
         "avg_if": null,
-        "avg_hr": null
+        "tss": null
       },
       "run_analise": {
-        "distance_km": null,
-        "total": 0,
+        "avg_hr": null,
         "avg_cadence": null,
-        "avg_decoupling": null,
         "tss": null,
+        "avg_decoupling": null,
+        "total": 0,
         "time_min": null,
-        "avg_hr": null
+        "distance_km": null
       },
       "swim_analise": {
-        "total": 0,
-        "tss": null,
         "avg_swolf": null,
-        "distance_m": null,
+        "tss": null,
+        "total": 0,
         "time_min": null,
+        "distance_m": null,
         "avg_hr": null
       },
       "bike_zones": null,
@@ -171,49 +171,49 @@
       "swim_pct": 0.0,
       "strength_pct": 44.9,
       "bike_analise": {
-        "time_min": 30.900000000000002,
-        "distance_km": 13.61,
-        "tss": 1.0,
-        "avg_decoupling": 4.335,
-        "avg_np": 34.0,
-        "avg_power": 31.5,
         "total": 2,
+        "avg_decoupling": 4.335,
+        "distance_km": 13.61,
         "avg_vi": 1.5165,
+        "avg_np": 34.0,
+        "time_min": 30.900000000000002,
+        "avg_hr": null,
+        "avg_power": 31.5,
         "avg_if": 0.16999999999999998,
-        "avg_hr": null
+        "tss": 1.0
       },
       "run_analise": {
-        "distance_km": 4.74,
-        "total": 1,
+        "avg_hr": null,
         "avg_cadence": 75.85382,
-        "avg_decoupling": 10.39,
         "tss": 23.0,
+        "avg_decoupling": 10.39,
+        "total": 1,
         "time_min": 34.4,
-        "avg_hr": null
+        "distance_km": 4.74
       },
       "swim_analise": {
-        "total": 0,
-        "tss": null,
         "avg_swolf": null,
-        "distance_m": null,
+        "tss": null,
+        "total": 0,
         "time_min": null,
+        "distance_m": null,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.0,
+        "z1_pct": 100.0,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 17.8,
-        "z1_pct": 100.0,
-        "z2_pct": 0.0,
-        "z2_min": 0.0,
-        "z3_pct": 0.0
+        "z2_min": 0.0
       },
       "run_zones": {
+        "z2_pct": 42.6,
+        "z1_pct": 51.1,
+        "z3_pct": 6.3,
         "z3_min": 2.1,
         "z1_min": 16.9,
-        "z1_pct": 51.1,
-        "z2_pct": 42.6,
-        "z2_min": 14.1,
-        "z3_pct": 6.3
+        "z2_min": 14.1
       }
     },
     {
@@ -244,49 +244,49 @@
       "swim_pct": 15.7,
       "strength_pct": 22.0,
       "bike_analise": {
-        "time_min": 40.0,
-        "distance_km": 11.94,
-        "tss": 9.0,
-        "avg_decoupling": -4.880000000000001,
-        "avg_np": 87.5,
-        "avg_power": 86.5,
         "total": 2,
+        "avg_decoupling": -4.880000000000001,
+        "distance_km": 11.94,
         "avg_vi": 1.0135,
+        "avg_np": 87.5,
+        "time_min": 40.0,
+        "avg_hr": null,
+        "avg_power": 86.5,
         "avg_if": 0.4375,
-        "avg_hr": null
+        "tss": 9.0
       },
       "run_analise": {
-        "distance_km": 15.44,
-        "total": 3,
+        "avg_hr": null,
         "avg_cadence": 81.53398966666667,
-        "avg_decoupling": 5.84,
         "tss": 98.0,
+        "avg_decoupling": 5.84,
+        "total": 3,
         "time_min": 97.5,
-        "avg_hr": null
+        "distance_km": 15.44
       },
       "swim_analise": {
-        "total": 1,
-        "tss": 20.0,
         "avg_swolf": null,
-        "distance_m": 1500.0,
+        "tss": 20.0,
+        "total": 1,
         "time_min": 34.6,
+        "distance_m": 1500.0,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 3.9,
+        "z1_pct": 95.3,
+        "z3_pct": 0.7,
         "z3_min": 0.3,
         "z1_min": 38.8,
-        "z1_pct": 95.3,
-        "z2_pct": 3.9,
-        "z2_min": 1.6,
-        "z3_pct": 0.7
+        "z2_min": 1.6
       },
       "run_zones": {
+        "z2_pct": 71.4,
+        "z1_pct": 23.4,
+        "z3_pct": 5.2,
         "z3_min": 4.9,
         "z1_min": 22.2,
-        "z1_pct": 23.4,
-        "z2_pct": 71.4,
-        "z2_min": 67.8,
-        "z3_pct": 5.2
+        "z2_min": 67.8
       }
     },
     {
@@ -317,49 +317,49 @@
       "swim_pct": 0.0,
       "strength_pct": 25.5,
       "bike_analise": {
-        "time_min": 90.0,
-        "distance_km": 30.61,
-        "tss": 73.0,
-        "avg_decoupling": -2.545,
-        "avg_np": 75.5,
-        "avg_power": 73.0,
         "total": 2,
+        "avg_decoupling": -2.545,
+        "distance_km": 30.61,
         "avg_vi": 1.0310000000000001,
+        "avg_np": 75.5,
+        "time_min": 90.0,
+        "avg_hr": null,
+        "avg_power": 73.0,
         "avg_if": 0.3775,
-        "avg_hr": null
+        "tss": 73.0
       },
       "run_analise": {
-        "distance_km": 17.99,
-        "total": 3,
+        "avg_hr": null,
         "avg_cadence": 82.70459333333334,
-        "avg_decoupling": 3.15,
         "tss": 149.0,
+        "avg_decoupling": 3.15,
+        "total": 3,
         "time_min": 106.5,
-        "avg_hr": null
+        "distance_km": 17.99
       },
       "swim_analise": {
-        "total": 0,
-        "tss": null,
         "avg_swolf": null,
-        "distance_m": null,
+        "tss": null,
+        "total": 0,
         "time_min": null,
+        "distance_m": null,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.7,
+        "z1_pct": 99.3,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 90.9,
-        "z1_pct": 99.3,
-        "z2_pct": 0.7,
-        "z2_min": 0.6,
-        "z3_pct": 0.0
+        "z2_min": 0.6
       },
       "run_zones": {
+        "z2_pct": 77.5,
+        "z1_pct": 20.6,
+        "z3_pct": 2.0,
         "z3_min": 2.1,
         "z1_min": 21.9,
-        "z1_pct": 20.6,
-        "z2_pct": 77.5,
-        "z2_min": 82.5,
-        "z3_pct": 2.0
+        "z2_min": 82.5
       }
     },
     {
@@ -390,49 +390,49 @@
       "swim_pct": 0.0,
       "strength_pct": 29.9,
       "bike_analise": {
-        "time_min": 109.0,
-        "distance_km": 29.73,
-        "tss": 75.0,
-        "avg_decoupling": 11.555,
-        "avg_np": 71.0,
-        "avg_power": 68.5,
         "total": 2,
+        "avg_decoupling": 11.555,
+        "distance_km": 29.73,
         "avg_vi": 1.0375,
+        "avg_np": 71.0,
+        "time_min": 109.0,
+        "avg_hr": null,
+        "avg_power": 68.5,
         "avg_if": 0.355,
-        "avg_hr": null
+        "tss": 75.0
       },
       "run_analise": {
-        "distance_km": 17.32,
-        "total": 3,
+        "avg_hr": null,
         "avg_cadence": 81.97182333333332,
-        "avg_decoupling": -2.6133333333333333,
         "tss": 129.0,
+        "avg_decoupling": -2.6133333333333333,
+        "total": 3,
         "time_min": 109.50000000000001,
-        "avg_hr": null
+        "distance_km": 17.32
       },
       "swim_analise": {
-        "total": 0,
-        "tss": null,
         "avg_swolf": null,
-        "distance_m": null,
+        "tss": null,
+        "total": 0,
         "time_min": null,
+        "distance_m": null,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.1,
+        "z1_pct": 99.9,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 108.6,
-        "z1_pct": 99.9,
-        "z2_pct": 0.1,
-        "z2_min": 0.1,
-        "z3_pct": 0.0
+        "z2_min": 0.1
       },
       "run_zones": {
+        "z2_pct": 73.7,
+        "z1_pct": 24.2,
+        "z3_pct": 2.0,
         "z3_min": 2.2,
         "z1_min": 26.6,
-        "z1_pct": 24.2,
-        "z2_pct": 73.7,
-        "z2_min": 80.9,
-        "z3_pct": 2.0
+        "z2_min": 80.9
       }
     },
     {
@@ -463,49 +463,49 @@
       "swim_pct": 5.9,
       "strength_pct": 0.0,
       "bike_analise": {
-        "time_min": 304.3,
-        "distance_km": 91.52,
-        "tss": 24.0,
-        "avg_decoupling": 8.44,
-        "avg_np": 60.0,
-        "avg_power": 58.0,
         "total": 2,
+        "avg_decoupling": 8.44,
+        "distance_km": 91.52,
         "avg_vi": 1.034,
+        "avg_np": 60.0,
+        "time_min": 304.3,
+        "avg_hr": null,
+        "avg_power": 58.0,
         "avg_if": 0.3,
-        "avg_hr": null
+        "tss": 24.0
       },
       "run_analise": {
-        "distance_km": 16.23,
-        "total": 2,
+        "avg_hr": null,
         "avg_cadence": 84.004375,
-        "avg_decoupling": 2.1350000000000002,
         "tss": 120.0,
+        "avg_decoupling": 2.1350000000000002,
+        "total": 2,
         "time_min": 102.3,
-        "avg_hr": null
+        "distance_km": 16.23
       },
       "swim_analise": {
-        "total": 1,
-        "tss": 18.0,
         "avg_swolf": null,
-        "distance_m": 1200.0,
+        "tss": 18.0,
+        "total": 1,
         "time_min": 25.6,
+        "distance_m": 1200.0,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.0,
+        "z1_pct": 100.0,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 50.0,
-        "z1_pct": 100.0,
-        "z2_pct": 0.0,
-        "z2_min": 0.0,
-        "z3_pct": 0.0
+        "z2_min": 0.0
       },
       "run_zones": {
+        "z2_pct": 77.2,
+        "z1_pct": 22.8,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 24.2,
-        "z1_pct": 22.8,
-        "z2_pct": 77.2,
-        "z2_min": 81.9,
-        "z3_pct": 0.0
+        "z2_min": 81.9
       }
     },
     {
@@ -536,49 +536,49 @@
       "swim_pct": 17.0,
       "strength_pct": 18.4,
       "bike_analise": {
-        "time_min": 115.2,
-        "distance_km": 30.97,
-        "tss": 100.0,
-        "avg_decoupling": -8.15,
-        "avg_np": 80.5,
-        "avg_power": 77.0,
         "total": 2,
+        "avg_decoupling": -8.15,
+        "distance_km": 30.97,
         "avg_vi": 1.0474999999999999,
+        "avg_np": 80.5,
+        "time_min": 115.2,
+        "avg_hr": null,
+        "avg_power": 77.0,
         "avg_if": 0.40249999999999997,
-        "avg_hr": null
+        "tss": 100.0
       },
       "run_analise": {
-        "distance_km": 18.56,
-        "total": 4,
+        "avg_hr": null,
         "avg_cadence": 81.05442125,
-        "avg_decoupling": 7.880000000000001,
         "tss": 149.0,
+        "avg_decoupling": 7.880000000000001,
+        "total": 4,
         "time_min": 123.19999999999999,
-        "avg_hr": null
+        "distance_km": 18.56
       },
       "swim_analise": {
-        "total": 2,
-        "tss": 34.0,
         "avg_swolf": null,
-        "distance_m": 2550.0,
+        "tss": 34.0,
+        "total": 2,
         "time_min": 62.699999999999996,
+        "distance_m": 2550.0,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.2,
+        "z1_pct": 99.8,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 115.0,
-        "z1_pct": 99.8,
-        "z2_pct": 0.2,
-        "z2_min": 0.2,
-        "z3_pct": 0.0
+        "z2_min": 0.2
       },
       "run_zones": {
+        "z2_pct": 65.5,
+        "z1_pct": 31.4,
+        "z3_pct": 3.1,
         "z3_min": 3.9,
         "z1_min": 40.0,
-        "z1_pct": 31.4,
-        "z2_pct": 65.5,
-        "z2_min": 83.4,
-        "z3_pct": 3.1
+        "z2_min": 83.4
       }
     },
     {
@@ -609,49 +609,49 @@
       "swim_pct": 2.0,
       "strength_pct": 8.7,
       "bike_analise": {
-        "time_min": 199.4,
-        "distance_km": 51.64999999999999,
-        "tss": 151.0,
-        "avg_decoupling": 5.676666666666667,
-        "avg_np": 75.0,
-        "avg_power": 72.66666666666667,
         "total": 3,
+        "avg_decoupling": 5.676666666666667,
+        "distance_km": 51.64999999999999,
         "avg_vi": 1.0303333333333333,
+        "avg_np": 75.0,
+        "time_min": 199.4,
+        "avg_hr": null,
+        "avg_power": 72.66666666666667,
         "avg_if": 0.375,
-        "avg_hr": null
+        "tss": 151.0
       },
       "run_analise": {
-        "distance_km": 20.92,
-        "total": 3,
+        "avg_hr": null,
         "avg_cadence": 80.98349166666667,
-        "avg_decoupling": 5.5,
         "tss": 159.0,
+        "avg_decoupling": 5.5,
+        "total": 3,
         "time_min": 130.3,
-        "avg_hr": null
+        "distance_km": 20.92
       },
       "swim_analise": {
-        "total": 1,
-        "tss": 2.0,
         "avg_swolf": null,
-        "distance_m": 325.0,
+        "tss": 2.0,
+        "total": 1,
         "time_min": 7.5,
+        "distance_m": 325.0,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.0,
+        "z1_pct": 100.0,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 199.1,
-        "z1_pct": 100.0,
-        "z2_pct": 0.0,
-        "z2_min": 0.0,
-        "z3_pct": 0.0
+        "z2_min": 0.0
       },
       "run_zones": {
+        "z2_pct": 65.7,
+        "z1_pct": 31.1,
+        "z3_pct": 3.2,
         "z3_min": 4.4,
         "z1_min": 42.3,
-        "z1_pct": 31.1,
-        "z2_pct": 65.7,
-        "z2_min": 89.4,
-        "z3_pct": 3.2
+        "z2_min": 89.4
       }
     },
     {
@@ -682,49 +682,49 @@
       "swim_pct": 5.5,
       "strength_pct": 20.4,
       "bike_analise": {
-        "time_min": 174.8,
-        "distance_km": 45.970000000000006,
-        "tss": 161.0,
-        "avg_decoupling": 1.9966666666666664,
-        "avg_np": 85.33333333333333,
-        "avg_power": 84.66666666666667,
         "total": 3,
+        "avg_decoupling": 1.9966666666666664,
+        "distance_km": 45.970000000000006,
         "avg_vi": 1.0073333333333332,
+        "avg_np": 85.33333333333333,
+        "time_min": 174.8,
+        "avg_hr": null,
+        "avg_power": 84.66666666666667,
         "avg_if": 0.4266666666666667,
-        "avg_hr": null
+        "tss": 161.0
       },
       "run_analise": {
-        "distance_km": 20.78,
-        "total": 3,
+        "avg_hr": null,
         "avg_cadence": 82.84964633333334,
-        "avg_decoupling": 5.63,
         "tss": 145.0,
+        "avg_decoupling": 5.63,
+        "total": 3,
         "time_min": 129.2,
-        "avg_hr": null
+        "distance_km": 20.78
       },
       "swim_analise": {
-        "total": 1,
-        "tss": 14.0,
         "avg_swolf": null,
-        "distance_m": 1325.0,
+        "tss": 14.0,
+        "total": 1,
         "time_min": 22.6,
+        "distance_m": 1325.0,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.7,
+        "z1_pct": 99.2,
+        "z3_pct": 0.1,
         "z3_min": 0.1,
         "z1_min": 185.1,
-        "z1_pct": 99.2,
-        "z2_pct": 0.7,
-        "z2_min": 1.3,
-        "z3_pct": 0.1
+        "z2_min": 1.3
       },
       "run_zones": {
+        "z2_pct": 48.5,
+        "z1_pct": 50.6,
+        "z3_pct": 0.8,
         "z3_min": 1.1,
         "z1_min": 67.1,
-        "z1_pct": 50.6,
-        "z2_pct": 48.5,
-        "z2_min": 64.3,
-        "z3_pct": 0.8
+        "z2_min": 64.3
       }
     },
     {
@@ -755,49 +755,49 @@
       "swim_pct": 0.0,
       "strength_pct": 14.4,
       "bike_analise": {
-        "time_min": 154.3,
-        "distance_km": 50.79,
-        "tss": 117.0,
-        "avg_decoupling": -0.03499999999999999,
-        "avg_np": 69.5,
-        "avg_power": 69.0,
         "total": 3,
+        "avg_decoupling": -0.03499999999999999,
+        "distance_km": 50.79,
         "avg_vi": 1.0074999999999998,
+        "avg_np": 69.5,
+        "time_min": 154.3,
+        "avg_hr": null,
+        "avg_power": 69.0,
         "avg_if": 0.34750000000000003,
-        "avg_hr": null
+        "tss": 117.0
       },
       "run_analise": {
-        "distance_km": 11.32,
-        "total": 3,
+        "avg_hr": null,
         "avg_cadence": 80.95933333333333,
-        "avg_decoupling": 6.620000000000001,
         "tss": 88.0,
+        "avg_decoupling": 6.620000000000001,
+        "total": 3,
         "time_min": 73.19999999999999,
-        "avg_hr": null
+        "distance_km": 11.32
       },
       "swim_analise": {
-        "total": 0,
-        "tss": null,
         "avg_swolf": null,
-        "distance_m": null,
+        "tss": null,
+        "total": 0,
         "time_min": null,
+        "distance_m": null,
         "avg_hr": null
       },
       "bike_zones": {
+        "z2_pct": 0.0,
+        "z1_pct": 100.0,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 105.0,
-        "z1_pct": 100.0,
-        "z2_pct": 0.0,
-        "z2_min": 0.0,
-        "z3_pct": 0.0
+        "z2_min": 0.0
       },
       "run_zones": {
+        "z2_pct": 57.5,
+        "z1_pct": 40.2,
+        "z3_pct": 2.3,
         "z3_min": 1.9,
         "z1_min": 33.0,
-        "z1_pct": 40.2,
-        "z2_pct": 57.5,
-        "z2_min": 47.2,
-        "z3_pct": 2.3
+        "z2_min": 47.2
       }
     },
     {
@@ -828,42 +828,42 @@
       "swim_pct": 0.0,
       "strength_pct": 21.5,
       "bike_analise": {
-        "time_min": 118.6,
-        "distance_km": 46.540000000000006,
-        "tss": 29.0,
-        "avg_decoupling": null,
-        "avg_np": null,
-        "avg_power": null,
         "total": 2,
+        "avg_decoupling": null,
+        "distance_km": 46.540000000000006,
         "avg_vi": null,
+        "avg_np": null,
+        "time_min": 118.6,
+        "avg_hr": null,
+        "avg_power": null,
         "avg_if": null,
-        "avg_hr": null
+        "tss": 29.0
       },
       "run_analise": {
-        "distance_km": 21.259999999999998,
-        "total": 4,
+        "avg_hr": null,
         "avg_cadence": 84.7257835,
-        "avg_decoupling": 5.792499999999999,
         "tss": 152.0,
+        "avg_decoupling": 5.792499999999999,
+        "total": 4,
         "time_min": 129.6,
-        "avg_hr": null
+        "distance_km": 21.259999999999998
       },
       "swim_analise": {
-        "total": 0,
-        "tss": null,
         "avg_swolf": null,
-        "distance_m": null,
+        "tss": null,
+        "total": 0,
         "time_min": null,
+        "distance_m": null,
         "avg_hr": null
       },
       "bike_zones": null,
       "run_zones": {
+        "z2_pct": 73.3,
+        "z1_pct": 26.7,
+        "z3_pct": 0.0,
         "z3_min": 0.0,
         "z1_min": 35.6,
-        "z1_pct": 26.7,
-        "z2_pct": 73.3,
-        "z2_min": 97.9,
-        "z3_pct": 0.0
+        "z2_min": 97.9
       }
     }
   ],
@@ -924,20 +924,6 @@
     }
   ],
   "progressoes": {
-    "Monotonia": {
-      "max": 4.8,
-      "media_periodo": 2.36
-    },
-    "Peso": {
-      "variacao": null,
-      "inicio": null,
-      "fim": 58.4
-    },
-    "TSS_Semanal": {
-      "media_ultimo_mes": 263.0,
-      "variacao": 223.0,
-      "media_primeiro_mes": 40.0
-    },
     "HRV": {
       "media_primeiro_mes": 0.0,
       "media_ultimo_mes": 57.7
@@ -947,6 +933,20 @@
       "pct": 0,
       "inicio": 0.0,
       "fim": 26.7
+    },
+    "Monotonia": {
+      "media_periodo": 2.36,
+      "max": 4.8
+    },
+    "TSS_Semanal": {
+      "variacao": 223.0,
+      "media_ultimo_mes": 263.0,
+      "media_primeiro_mes": 40.0
+    },
+    "Peso": {
+      "variacao": null,
+      "inicio": null,
+      "fim": 58.4
     }
   },
   "predicao_evento": null,
