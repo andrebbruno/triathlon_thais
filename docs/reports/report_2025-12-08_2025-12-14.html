@@ -498,11 +498,11 @@
   <div class="stat-card">
     <div class="stat-value">3.4</div>
     <div class="stat-label">CTL atual</div>
-    <div class="stat-pill">+1.1</div>
+    <div class="stat-pill">+3.5</div>
     <div class="stat-note">Evolucao nas ultimas 4 semanas.</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">19</div>
+    <div class="stat-value">40</div>
     <div class="stat-label">TSS medio 4s</div>
     <div class="stat-pill">0</div>
     <div class="stat-note">Comparado com as 4 semanas anteriores.</div>
@@ -533,19 +533,19 @@
   </div>
 </div>
 
-<div class="lt-meta">Longo prazo: 2025-11-11 a 2026-02-03</div>
+<div class="lt-meta">Longo prazo: 2025-11-16 a 2026-02-08</div>
 <div class="lt-grid">
   <div class="lt-panel">
     <h3>Insights</h3>
-    <ul class="lt-list"><li>[INFO] Progressao lenta: CTL variou apenas 0%</li><li>Consistencia: 75% (9/12 semanas ativas)</li><li>[INFO] Carga semanal media baixa (146 TSS) - ha espaco para crescimento</li><li>Proporcao media: Bike 25% | Run 32% | Swim 5%</li><li>[INFO] Natacao representa menos de 10% do treino - considere aumentar volume</li></ul>
+    <ul class="lt-list"><li>[INFO] Progressao lenta: CTL variou apenas 0%</li><li>Consistencia: 83% (10/12 semanas ativas)</li><li>[INFO] Carga semanal media baixa (177 TSS) - ha espaco para crescimento</li><li>Proporcao media: Bike 34% | Run 28% | Swim 4%</li><li>[INFO] Natacao representa menos de 10% do treino - considere aumentar volume</li></ul>
   </div>
   <div class="lt-panel">
     <h3>Alertas</h3>
-    <ul class="lt-list lt-alert"><li>[ALERTA] TSS semanal aumentou muito: +217 TSS/semana</li><li>[ALERTA] Monotonia media alta (2.45) - varie intensidades</li></ul>
+    <ul class="lt-list lt-alert"><li>[ALERTA] TSS semanal aumentou muito: +223 TSS/semana</li><li>[ALERTA] Monotonia media alta (2.36) - varie intensidades</li></ul>
   </div>
   <div class="lt-panel">
     <h3>Blocos 4 semanas</h3>
-    <div class="lt-blocks"><div class="lt-block"><strong>Bloco 1</strong><div>11/11 - 02/12</div><div>TSS: 19</div><div>CTL: 1.1 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 2</strong><div>09/12 - 30/12</div><div>TSS: 184</div><div>CTL: 14.4 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 3</strong><div>06/01 - 27/01</div><div>TSS: 236</div><div>CTL: 26.3 | TSB: 0</div></div></div>
+    <div class="lt-blocks"><div class="lt-block"><strong>Bloco 1</strong><div>16/11 - 07/12</div><div>TSS: 40</div><div>CTL: 3.5 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 2</strong><div>14/12 - 04/01</div><div>TSS: 228</div><div>CTL: 18.2 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 3</strong><div>11/01 - 01/02</div><div>TSS: 263</div><div>CTL: 26.7 | TSB: 0</div></div></div>
   </div>
 </div>
     <div class="grid grid-2" style="margin-top:16px">
@@ -658,14 +658,14 @@
     ]},
     options:{plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0'}}},scales:{x:{display:false},y:{ticks:{color:'#94a3b8'}}}}
   });
-    new Chart(document.getElementById('trend-load-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{label:'CTL',data:[0.0,0.0,0.0,1.1],borderColor:'#60a5fa',tension:.3},{label:'ATL',data:[0.0,0.0,0.0,6.2],borderColor:'#f59e0b',tension:.3},{label:'TSB',data:[0.0,0.0,0.0,0.0],borderColor:'#22c55e',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-tss-chart'),{data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{type:'bar',label:'TSS',data:[0,0,0,75.0],backgroundColor:'rgba(94,163,255,0.4)'},{type:'line',label:'Horas',data:[0.0,0.0,0.0,3.1],borderColor:'#f59e0b',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-well-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{label:'Sono',data:[null,null,null,null],borderColor:'#22c55e',tension:.3},{label:'HRV',data:[null,null,null,null],borderColor:'#60a5fa',tension:.3},{label:'FC Repouso',data:[null,null,null,50.0],borderColor:'#ef4444',tension:.3},{label:'Peso',data:[null,null,null,null],borderColor:'#a855f7',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-modality-chart'),{type:'bar',data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{label:'Bike %',data:[0,0,0,16.6],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Run %',data:[0,0,0,54.8],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Swim %',data:[0,0,0,0.0],backgroundColor:'rgba(56,189,248,0.35)'},{label:'Forca %',data:[0,0,0,28.6],backgroundColor:'rgba(168,85,247,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
-  new Chart(document.getElementById('trend-bike-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{label:'Bike IF',data:[null,null,null,0.16999999999999998],borderColor:'#f59e0b',tension:.3},{label:'Bike VI',data:[null,null,null,1.5165],borderColor:'#94a3b8',tension:.3},{label:'Bike Decoupling %',data:[null,null,null,4.335],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-run-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{label:'Cadencia Run',data:[null,null,null,80.44533],borderColor:'#22c55e',tension:.3},{label:'Decoupling Run %',data:[null,null,null,5.489999999999999],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-zone-bike'),{type:'bar',data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{label:'Z1',data:[null,null,null,100.0],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,null,0.0],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,null,0.0],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
-  new Chart(document.getElementById('trend-zone-run'),{type:'bar',data:{labels:["11/11","18/11","25/11","02/12"],datasets:[{label:'Z1',data:[null,null,null,34.7],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,null,62.9],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,null,2.4],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+    new Chart(document.getElementById('trend-load-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{label:'CTL',data:[0.0,0.0,0.0,3.5],borderColor:'#60a5fa',tension:.3},{label:'ATL',data:[0.0,0.0,0.4,16.0],borderColor:'#f59e0b',tension:.3},{label:'TSB',data:[0.0,0.0,0.0,0.0],borderColor:'#22c55e',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-tss-chart'),{data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{type:'bar',label:'TSS',data:[0,0,27.0,132.0],backgroundColor:'rgba(94,163,255,0.4)'},{type:'line',label:'Horas',data:[0.0,0.0,2.0,3.7],borderColor:'#f59e0b',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-well-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{label:'Sono',data:[null,null,null,null],borderColor:'#22c55e',tension:.3},{label:'HRV',data:[null,null,null,null],borderColor:'#60a5fa',tension:.3},{label:'FC Repouso',data:[null,null,50.0,50.0],borderColor:'#ef4444',tension:.3},{label:'Peso',data:[null,null,null,null],borderColor:'#a855f7',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-modality-chart'),{type:'bar',data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{label:'Bike %',data:[0,0,26.1,18.1],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Run %',data:[0,0,29.0,44.2],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Swim %',data:[0,0,0.0,15.7],backgroundColor:'rgba(56,189,248,0.35)'},{label:'Forca %',data:[0,0,44.9,22.0],backgroundColor:'rgba(168,85,247,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+  new Chart(document.getElementById('trend-bike-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{label:'Bike IF',data:[null,null,0.16999999999999998,0.4375],borderColor:'#f59e0b',tension:.3},{label:'Bike VI',data:[null,null,1.5165,1.0135],borderColor:'#94a3b8',tension:.3},{label:'Bike Decoupling %',data:[null,null,4.335,-4.880000000000001],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-run-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{label:'Cadencia Run',data:[null,null,75.85382,81.53398966666667],borderColor:'#22c55e',tension:.3},{label:'Decoupling Run %',data:[null,null,10.39,5.84],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-zone-bike'),{type:'bar',data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{label:'Z1',data:[null,null,100.0,95.3],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,0.0,3.9],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,0.0,0.7],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+  new Chart(document.getElementById('trend-zone-run'),{type:'bar',data:{labels:["16/11","23/11","30/11","07/12"],datasets:[{label:'Z1',data:[null,null,51.1,23.4],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,42.6,71.4],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,6.3,5.2],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
 </script>
 </body>
 </html>

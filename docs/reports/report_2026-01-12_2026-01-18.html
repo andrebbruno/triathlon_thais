@@ -515,23 +515,23 @@
   <div class="stat-card">
     <div class="stat-value">21.9</div>
     <div class="stat-label">CTL atual</div>
-    <div class="stat-pill">+18.2</div>
+    <div class="stat-pill">+22.4</div>
     <div class="stat-note">Evolucao nas ultimas 9 semanas.</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">206</div>
+    <div class="stat-value">248</div>
     <div class="stat-label">TSS medio 4s</div>
-    <div class="stat-pill">+151</div>
+    <div class="stat-pill">+149</div>
     <div class="stat-note">Comparado com as 4 semanas anteriores.</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">6.12 h</div>
+    <div class="stat-value">6.08 h</div>
     <div class="stat-label">Sono medio 4s</div>
-    <div class="stat-pill">+4.3h</div>
+    <div class="stat-pill">+4.4h</div>
     <div class="stat-note">Tendencia recente de recuperacao.</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">60.2</div>
+    <div class="stat-value">58.7</div>
     <div class="stat-label">Peso atual</div>
     <div class="stat-pill">n/a</div>
     <div class="stat-note">Variacao desde o inicio do periodo.</div>
@@ -550,19 +550,19 @@
   </div>
 </div>
 
-<div class="lt-meta">Longo prazo: 2025-11-11 a 2026-02-03</div>
+<div class="lt-meta">Longo prazo: 2025-11-16 a 2026-02-08</div>
 <div class="lt-grid">
   <div class="lt-panel">
     <h3>Insights</h3>
-    <ul class="lt-list"><li>[INFO] Progressao lenta: CTL variou apenas 0%</li><li>Consistencia: 75% (9/12 semanas ativas)</li><li>[INFO] Carga semanal media baixa (146 TSS) - ha espaco para crescimento</li><li>Proporcao media: Bike 25% | Run 32% | Swim 5%</li><li>[INFO] Natacao representa menos de 10% do treino - considere aumentar volume</li></ul>
+    <ul class="lt-list"><li>[INFO] Progressao lenta: CTL variou apenas 0%</li><li>Consistencia: 83% (10/12 semanas ativas)</li><li>[INFO] Carga semanal media baixa (177 TSS) - ha espaco para crescimento</li><li>Proporcao media: Bike 34% | Run 28% | Swim 4%</li><li>[INFO] Natacao representa menos de 10% do treino - considere aumentar volume</li></ul>
   </div>
   <div class="lt-panel">
     <h3>Alertas</h3>
-    <ul class="lt-list lt-alert"><li>[ALERTA] TSS semanal aumentou muito: +217 TSS/semana</li><li>[ALERTA] Monotonia media alta (2.45) - varie intensidades</li></ul>
+    <ul class="lt-list lt-alert"><li>[ALERTA] TSS semanal aumentou muito: +223 TSS/semana</li><li>[ALERTA] Monotonia media alta (2.36) - varie intensidades</li></ul>
   </div>
   <div class="lt-panel">
     <h3>Blocos 4 semanas</h3>
-    <div class="lt-blocks"><div class="lt-block"><strong>Bloco 1</strong><div>11/11 - 02/12</div><div>TSS: 19</div><div>CTL: 1.1 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 2</strong><div>09/12 - 30/12</div><div>TSS: 184</div><div>CTL: 14.4 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 3</strong><div>06/01 - 27/01</div><div>TSS: 236</div><div>CTL: 26.3 | TSB: 0</div></div></div>
+    <div class="lt-blocks"><div class="lt-block"><strong>Bloco 1</strong><div>16/11 - 07/12</div><div>TSS: 40</div><div>CTL: 3.5 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 2</strong><div>14/12 - 04/01</div><div>TSS: 228</div><div>CTL: 18.2 | TSB: 0</div></div><div class="lt-block"><strong>Bloco 3</strong><div>11/01 - 01/02</div><div>TSS: 263</div><div>CTL: 26.7 | TSB: 0</div></div></div>
   </div>
 </div>
     <div class="grid grid-2" style="margin-top:16px">
@@ -675,14 +675,14 @@
     ]},
     options:{plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0'}}},scales:{x:{display:false},y:{ticks:{color:'#94a3b8'}}}}
   });
-    new Chart(document.getElementById('trend-load-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{label:'CTL',data:[0.0,0.0,0.0,1.1,4.3,9.3,11.7,14.4,18.2],borderColor:'#60a5fa',tension:.3},{label:'ATL',data:[0.0,0.0,0.0,6.2,17.4,31.8,26.4,30.2,35.6],borderColor:'#f59e0b',tension:.3},{label:'TSB',data:[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],borderColor:'#22c55e',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-tss-chart'),{data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{type:'bar',label:'TSS',data:[0,0,0,75.0,144.0,232.0,145.0,213.0,235.0],backgroundColor:'rgba(94,163,255,0.4)'},{type:'line',label:'Horas',data:[0.0,0.0,0.0,3.1,3.0,5.4,6.5,4.5,4.5],borderColor:'#f59e0b',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-well-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{label:'Sono',data:[null,null,null,null,7.3,7.1,5.0,5.2,7.2],borderColor:'#22c55e',tension:.3},{label:'HRV',data:[null,null,null,null,54.0,55.8,54.0,53.3,51.2],borderColor:'#60a5fa',tension:.3},{label:'FC Repouso',data:[null,null,null,50.0,47.5,46.0,48.0,46.7,46.2],borderColor:'#ef4444',tension:.3},{label:'Peso',data:[null,null,null,null,null,null,null,null,60.2],borderColor:'#a855f7',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-modality-chart'),{type:'bar',data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{label:'Bike %',data:[0,0,0,16.6,0.0,34.0,78.8,18.5,20.4],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Run %',data:[0,0,0,54.8,54.3,32.7,21.2,49.1,43.3],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Swim %',data:[0,0,0,0.0,19.0,0.0,0.0,9.5,23.2],backgroundColor:'rgba(56,189,248,0.35)'},{label:'Forca %',data:[0,0,0,28.6,26.7,33.3,0.0,22.9,13.0],backgroundColor:'rgba(168,85,247,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
-  new Chart(document.getElementById('trend-bike-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{label:'Bike IF',data:[null,null,null,0.16999999999999998,null,0.345,0.385,0.3,0.415],borderColor:'#f59e0b',tension:.3},{label:'Bike VI',data:[null,null,null,1.5165,null,1.0070000000000001,1.027,1.034,1.012],borderColor:'#94a3b8',tension:.3},{label:'Bike Decoupling %',data:[null,null,null,4.335,null,6.575,10.48,8.44,-13.46],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-run-chart'),{type:'line',data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{label:'Cadencia Run',data:[null,null,null,80.44533,81.95640466666667,80.2436,84.97565499999999,84.6474425,77.34901666666666],borderColor:'#22c55e',tension:.3},{label:'Decoupling Run %',data:[null,null,null,5.489999999999999,5.0233333333333325,0.13000000000000003,-2.9099999999999997,5.4975,10.51],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
-  new Chart(document.getElementById('trend-zone-bike'),{type:'bar',data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{label:'Z1',data:[null,null,null,100.0,null,99.9,99.8,100.0,100.0],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,null,0.0,null,0.1,0.2,0.0,0.0],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,null,0.0,null,0.0,0.0,0.0,0.0],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
-  new Chart(document.getElementById('trend-zone-run'),{type:'bar',data:{labels:["11/11","18/11","25/11","02/12","09/12","16/12","23/12","30/12","06/01"],datasets:[{label:'Z1',data:[null,null,null,34.7,14.1,29.6,14.9,25.2,32.0],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,null,62.9,79.9,67.1,85.1,73.1,63.6],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,null,2.4,6.1,3.2,0.0,1.6,4.4],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+    new Chart(document.getElementById('trend-load-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{label:'CTL',data:[0.0,0.0,0.0,3.5,7.9,12.3,14.1,18.2,22.4],borderColor:'#60a5fa',tension:.3},{label:'ATL',data:[0.0,0.0,0.4,16.0,28.8,35.1,31.3,41.3,47.7],borderColor:'#f59e0b',tension:.3},{label:'TSB',data:[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],borderColor:'#22c55e',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-tss-chart'),{data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{type:'bar',label:'TSS',data:[0,0,27.0,132.0,238.0,217.0,162.0,296.0,317.0],backgroundColor:'rgba(94,163,255,0.4)'},{type:'line',label:'Horas',data:[0.0,0.0,2.0,3.7,4.4,5.2,7.2,6.1,6.2],borderColor:'#f59e0b',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-well-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{label:'Sono',data:[null,null,null,null,6.6,6.9,4.1,6.5,6.8],borderColor:'#22c55e',tension:.3},{label:'HRV',data:[null,null,null,null,54.0,54.3,55.0,48.0,54.3],borderColor:'#60a5fa',tension:.3},{label:'FC Repouso',data:[null,null,50.0,50.0,45.3,47.5,46.5,46.5,44.5],borderColor:'#ef4444',tension:.3},{label:'Peso',data:[null,null,null,null,null,null,null,60.2,58.7],borderColor:'#a855f7',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-modality-chart'),{type:'bar',data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{label:'Bike %',data:[0,0,26.1,18.1,34.1,35.0,70.4,31.2,54.0],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Run %',data:[0,0,29.0,44.2,40.4,35.2,23.7,33.4,35.3],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Swim %',data:[0,0,0.0,15.7,0.0,0.0,5.9,17.0,2.0],backgroundColor:'rgba(56,189,248,0.35)'},{label:'Forca %',data:[0,0,44.9,22.0,25.5,29.9,0.0,18.4,8.7],backgroundColor:'rgba(168,85,247,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+  new Chart(document.getElementById('trend-bike-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{label:'Bike IF',data:[null,null,0.16999999999999998,0.4375,0.3775,0.355,0.3,0.40249999999999997,0.375],borderColor:'#f59e0b',tension:.3},{label:'Bike VI',data:[null,null,1.5165,1.0135,1.0310000000000001,1.0375,1.034,1.0474999999999999,1.0303333333333333],borderColor:'#94a3b8',tension:.3},{label:'Bike Decoupling %',data:[null,null,4.335,-4.880000000000001,-2.545,11.555,8.44,-8.15,5.676666666666667],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-run-chart'),{type:'line',data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{label:'Cadencia Run',data:[null,null,75.85382,81.53398966666667,82.70459333333334,81.97182333333332,84.004375,81.05442125,80.98349166666667],borderColor:'#22c55e',tension:.3},{label:'Decoupling Run %',data:[null,null,10.39,5.84,3.15,-2.6133333333333333,2.1350000000000002,7.880000000000001,5.5],borderColor:'#ef4444',tension:.3}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false}}}});
+  new Chart(document.getElementById('trend-zone-bike'),{type:'bar',data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{label:'Z1',data:[null,null,100.0,95.3,99.3,99.9,100.0,99.8,100.0],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,0.0,3.9,0.7,0.1,0.0,0.2,0.0],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,0.0,0.7,0.0,0.0,0.0,0.0,0.0],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
+  new Chart(document.getElementById('trend-zone-run'),{type:'bar',data:{labels:["16/11","23/11","30/11","07/12","14/12","21/12","28/12","04/01","11/01"],datasets:[{label:'Z1',data:[null,null,51.1,23.4,20.6,24.2,22.8,31.4,31.1],backgroundColor:'rgba(34,197,94,0.35)'},{label:'Z2',data:[null,null,42.6,71.4,77.5,73.7,77.2,65.5,65.7],backgroundColor:'rgba(245,158,11,0.35)'},{label:'Z3',data:[null,null,6.3,5.2,2.0,2.0,0.0,3.1,3.2],backgroundColor:'rgba(239,68,68,0.35)'}]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{beginAtZero:true,max:100}}}});
 </script>
 </body>
 </html>
