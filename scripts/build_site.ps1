@@ -1,6 +1,7 @@
 ﻿param(
   [string]$ReportsDir,
-  [string]$SiteDir
+  [string]$SiteDir,
+  [switch]$RebuildAll
 )
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -30,6 +31,25 @@ function Html-Escape {
   param([string]$Text)
   if ($null -eq $Text) { return "" }
   return [System.Net.WebUtility]::HtmlEncode($Text)
+}
+
+function Should-RebuildReportHtml {
+  param(
+    [System.IO.FileInfo]$ReportFile,
+    [string]$OutputPath,
+    [bool]$Force
+  )
+
+  if ($Force) { return $true }
+  if (-not $ReportFile) { return $false }
+  if (-not (Test-Path $OutputPath)) { return $true }
+
+  try {
+    $outItem = Get-Item $OutputPath -ErrorAction Stop
+    return ($ReportFile.LastWriteTimeUtc -gt $outItem.LastWriteTimeUtc)
+  } catch {
+    return $true
+  }
 }
 
 function Fix-TextEncoding {
@@ -2137,7 +2157,10 @@ $longtermInsightsBlock
 foreach ($report in $reportFiles) {
   $outputName = $report.Name -replace "\.json$", ".html"
   $outputPath = Join-Path $siteReports $outputName
-  Build-ReportHtmlModern -ReportPath $report.FullName -OutputPath $outputPath
+  # Incremental build: keep past report HTML stable unless the source JSON changed.
+  if (Should-RebuildReportHtml -ReportFile $report -OutputPath $outputPath -Force:$RebuildAll) {
+    Build-ReportHtmlModern -ReportPath $report.FullName -OutputPath $outputPath
+  }
 }
 
   $memoryPath = Join-Path $repoRoot "COACHING_MEMORY.md"
@@ -2472,11 +2495,14 @@ foreach ($report in $reportFiles) {
   $mainAnalysisFiles = $analysisFiles
   $ReportsDir = $thaisReportsDir
   $analysisFiles = $thaisAnalysisFiles
-  foreach ($report in $thaisReportFiles) {
-    $outputName = $report.Name -replace "\.json$", ".html"
-    $outputPath = Join-Path $thaisSiteReports $outputName
-    Build-ReportHtmlModern -ReportPath $report.FullName -OutputPath $outputPath
-  }
+   foreach ($report in $thaisReportFiles) {
+     $outputName = $report.Name -replace "\.json$", ".html"
+     $outputPath = Join-Path $thaisSiteReports $outputName
+    # Incremental build: keep past report HTML stable unless the source JSON changed.
+    if (Should-RebuildReportHtml -ReportFile $report -OutputPath $outputPath -Force:$RebuildAll) {
+      Build-ReportHtmlModern -ReportPath $report.FullName -OutputPath $outputPath
+    }
+   }
   $ReportsDir = $mainReportsDir
   $analysisFiles = $mainAnalysisFiles
 
