@@ -24,6 +24,7 @@ Training philosophy
 Calendar 2026
 - 2026-03-08: Circuito Oscar Fila 10 km (Sao Jose dos Campos) - priority B
 - 2026-04-26: Triathlon Sprint (Santos) - priority A
+- 2026-05-10: DCTA Run Airport 10 km (Sao Jose dos Campos) - priority C
 - 2026-07-26: Meia Maratona Nike SPCity - priority C
 
 Reference metrics

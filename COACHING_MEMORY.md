@@ -38,6 +38,7 @@
 |------|-------|------|------------|--------|
 | 08/03/2026 | Circuito Oscar Fila (10 km) - Sao Jose dos Campos | Corrida 10 km | B | Planejada |
 | 26/04/2026 | Triathlon Sprint - Santos | Triathlon Sprint | A | Planejada |
+| 10/05/2026 | DCTA Run Airport (10 km) - Sao Jose dos Campos | Corrida 10 km | C | Planejada |
 | 26/07/2026 | Meia Maratona Nike SPCity | Corrida 21.1 km | C | Planejada |
 
 ---
