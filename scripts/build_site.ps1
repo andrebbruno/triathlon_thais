@@ -57,10 +57,11 @@ function Fix-TextEncoding {
   param([string]$Text)
   if (-not $Text) { return "" }
   # Heuristic: most mojibake we see from API responses includes "Ã" / "Â" sequences.
-  if ($Text -match "[ÃÂ]") {
+  # IMPORTANT: use case-sensitive match; otherwise lowercase chars like "ã"/"â" would trigger and corrupt valid PT-BR text.
+  if ($Text -cmatch "[ÃÂ]") {
     try {
       $fixed = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::GetEncoding("Windows-1252").GetBytes($Text))
-      if ($fixed -match "[ÃÂ]") {
+      if ($fixed -cmatch "[ÃÂ]") {
         $fixed = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::GetEncoding("ISO-8859-1").GetBytes($Text))
       }
       return $fixed
