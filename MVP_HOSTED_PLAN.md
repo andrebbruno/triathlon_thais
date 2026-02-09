@@ -65,7 +65,12 @@ Goal: keep cost near zero and automate weekly export + web view.
 1. Resumo executivo no topo (3 bullets: bom/ruim/mudar).
 2. Comparacao com semana anterior (setas + %).
 3. Recomendacoes taticas por modalidade (1 acao imediata).
-4. Glossario inteligente com tooltip nos cards.
+4. Glossario + "Como ler" (1 tela) com exemplos praticos.
+5. Insights automaticos por grafico (1-2 frases do tipo "subiu/desceu", "pico", "alerta").
+6. Expandir graficos: botao "Ampliar" + detalhes no proprio relatorio (tooltips/explicacao).
+7. Navegacao e historico: indice com ancoras + "semana anterior / proxima".
+8. Modo imprimir/PDF + legibilidade mobile (tipografia maior, contraste).
+9. Qualidade de dados: validacoes (timezone, null em campos criticos, planejamento ausente) + carimbo no report.
 
 ### Regras iniciais: objetivo do treino (mapeamento)
 - Sweet Spot, Limiar, Threshold, Tempo -> objetivo: Threshold/Tempo
